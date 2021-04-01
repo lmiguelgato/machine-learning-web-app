@@ -105,7 +105,7 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+src/api/venv/
 ENV/
 env.bak/
 venv.bak/
@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Redis build files
+src/api/redis-stable
+
+# Node.js modules
+node_modules
