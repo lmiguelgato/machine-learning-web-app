@@ -47,7 +47,6 @@ function App() {
             <header className="App-header">
             <Websocket options={{0: '✊', 1: '✋', 2: '✌️'}} type="radio"/>
             </header>
-            <AccordionInfo />
           </Route>
         </Switch> 
       </BrowserRouter>

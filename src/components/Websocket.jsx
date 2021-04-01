@@ -50,17 +50,8 @@ function Websocket(props) {
 
   return (
     <div>
-      <Button
-      variant="success"
-      size="lg"
-      disabled={isLoading}
-      onClick={!isLoading ? startJob : null}
-      className="Button">
-      { isLoading ? '🧠 Training model (' + progress + ' %)' : '🚀 Click to train' }
-      </Button>
-      <br />      
       { isLoading
-          ? option.length ?
+          ? (option.length && props.type === "checkbox") ?
               option.length === 1 ?
                 <div>Training with option: { optionDescription[option[0][0]]}</div>
               : <div>Training with options: { option.map((i) => {return optionDescription[i[0]]}) }</div>
@@ -73,6 +64,15 @@ function Websocket(props) {
             })}
             </ToggleButtonGroup>
       }
+      <br />
+      <Button
+      variant="success"
+      size="lg"
+      disabled={isLoading}
+      onClick={!isLoading ? startJob : null}
+      className="Button">
+      { isLoading ? '🧠 Training model (' + progress + ' %)' : '🚀 Click to train' }
+      </Button>
       <br />
       { time }
       <h4 className="Message">{ status }</h4>

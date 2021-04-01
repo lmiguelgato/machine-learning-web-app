@@ -20,12 +20,12 @@ function MLCamera() {
         : null
       }
       <br />
-      <Button
+      <Button className="Button"
       variant="success"
       size="sm"
       onClick={toggleOnOff}>
       { capture ? '⛔ Turn off webcam' : '🎥 Turn on webcam' }
-      </Button>
+      </Button>      
     </>
   );
 }
