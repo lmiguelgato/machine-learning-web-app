@@ -49,20 +49,22 @@ function Websocket(props) {
   const handleChange = (val) => setOption(val);
 
   return (
-    <div>
+    <div>      
+      <ToggleButtonGroup name="options" value={option} type={props.type} onChange={handleChange}>
+        {Object.keys(optionDescription).map((key) => {
+          return (
+            <ToggleButton disabled={isLoading} variant="outline-success" size="sm" value={key+1} disabled={isLoading}>{optionDescription[key]}</ToggleButton>    
+          )
+        })}
+      </ToggleButtonGroup>
+      <br />
       { isLoading
-          ? (option.length && props.type === "checkbox") ?
-              option.length === 1 ?
-                <div>Training with option: { optionDescription[option[0][0]]}</div>
+          ? (option.length && props.type === "checkbox") 
+            ? option.length === 1 
+              ? <div>Training with option: { optionDescription[option[0][0]]}</div>
               : <div>Training with options: { option.map((i) => {return optionDescription[i[0]]}) }</div>
             : null
-          : <ToggleButtonGroup name="options" value={option} type={props.type} onChange={handleChange}>
-            {Object.keys(optionDescription).map((key) => {
-              return (
-                <ToggleButton variant="outline-success" size="sm" value={key+1} disabled={isLoading}>{optionDescription[key]}</ToggleButton>    
-              )
-            })}
-            </ToggleButtonGroup>
+          : null
       }
       <br />
       <Button
