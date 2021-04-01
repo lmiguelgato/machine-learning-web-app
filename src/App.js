@@ -16,6 +16,7 @@ function App() {
       <div className="container">
         <NavbarBrand href="/home">Machine Learning web app 💡</NavbarBrand>
         <ChangeRoute label='Webcam' link="/webcam"/>
+        <ChangeRoute label='Rock/Paper/Scissors' link="/rock-paper-scissors"/>
         <About />
       </div>
       </Navbar>
@@ -36,7 +37,15 @@ function App() {
           <Route path="/webcam">
             <MLCamera />
             <header className="App-header">
-            <Websocket />
+            <Websocket options={{0: '🕙', 1: '📈', 2: '💾'}} type="checkbox"/>
+            </header>
+            <AccordionInfo />
+          </Route>
+
+          <Route path="/rock-paper-scissors">
+            <MLCamera />
+            <header className="App-header">
+            <Websocket options={{0: '✊', 1: '✋', 2: '✌️'}} type="radio"/>
             </header>
             <AccordionInfo />
           </Route>

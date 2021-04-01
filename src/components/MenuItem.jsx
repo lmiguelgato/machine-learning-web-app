@@ -10,7 +10,7 @@ export const About = () => {
       <Alert show={show} variant="success">
         <p>
           This is just a template web app using React JS to build the UI, and Flask as API. It uses Redis and celery to handle background tasks.
-          The original repo can be found <Alert.Link href="https://github.com/lmiguelgato/react-flask-template">here</Alert.Link>.
+          The original repo can be found <Alert.Link href="https://github.com/lmiguelgato/machine-learning-web-app">here</Alert.Link>.
         </p>
         <hr />
         <div className="d-flex justify-content-end">

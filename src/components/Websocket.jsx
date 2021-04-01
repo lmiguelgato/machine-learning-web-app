@@ -7,7 +7,7 @@ import socketIOClient from 'socket.io-client';
 
 const ENDPOINT = 'http://127.0.0.1:5000/';
 
-function Websocket() {
+function Websocket(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState('');
   const [status, setStatus] = useState('');
@@ -15,7 +15,7 @@ function Websocket() {
   const [option, setOption] = useState([]);
   const [time, setTime] = useState('');
 
-  const optionDescription = {0: '🕙', 1: '📈', 2: '💾'}
+  const optionDescription = props.options
 
   const startJob = async () => {
     setIsLoading(true);
@@ -65,7 +65,7 @@ function Websocket() {
                 <div>Training with option: { optionDescription[option[0][0]]}</div>
               : <div>Training with options: { option.map((i) => {return optionDescription[i[0]]}) }</div>
             : null
-          : <ToggleButtonGroup type="checkbox" value={option} onChange={handleChange}>
+          : <ToggleButtonGroup name="options" value={option} type={props.type} onChange={handleChange}>
             {Object.keys(optionDescription).map((key) => {
               return (
                 <ToggleButton variant="outline-success" size="sm" value={key+1} disabled={isLoading}>{optionDescription[key]}</ToggleButton>    
