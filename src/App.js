@@ -3,6 +3,7 @@ import './App.css';
 import Websocket from './components/Websocket';
 import AccordionInfo from './components/AccordionInfo';
 import Info from './components/Info';
+import MLCamera from './components/MLCamera';
 
 
 function App() {
@@ -14,8 +15,9 @@ function App() {
         <Info />
       </div>
       </Navbar>
-      <header className="App-header">        
-        <Websocket />        
+      <MLCamera />
+      <header className="App-header">
+        <Websocket />
       </header>
       <AccordionInfo />
     </div>

@@ -34,6 +34,7 @@
     "react-icons": "^4.2.0",
     "react-popper": "^2.2.4",
     "react-scripts": "4.0.3",
+    "react-webcam": "^5.2.3",
     "react-websocket": "^2.1.0",
     "reactstrap": "^8.9.0",
     "rxjs": "^6.6.7",
