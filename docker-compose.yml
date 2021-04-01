@@ -10,7 +10,7 @@ services:
 
   celery:
     image: "celery_worker"
-    command: [celery, -A, main.celery, worker, --loglevel=info]
+    command: [celery, -A, main.celery, worker, --loglevel=info, -E]
     depends_on:
       - "redis"
     env_file:
