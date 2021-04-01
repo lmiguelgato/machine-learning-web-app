@@ -57,7 +57,8 @@ def long_task(room, url):
         meta = {'current': i,
                 'total': total,
                 'status': message,
-                'room': room}
+                'room': room
+                }
 
         post(url, json=meta)
         time.sleep(0.5)
@@ -65,7 +66,9 @@ def long_task(room, url):
     meta = {'current': 100,
             'total': 100,
             'status': 'Done.',
-            'room': room}
+            'room': room,
+            'time': datetime.now().strftime('%H:%M:%S'),
+            }
     post(url, json=meta)
     return meta
 
