@@ -15,6 +15,8 @@ function Websocket() {
   const [option, setOption] = useState([]);
   const [time, setTime] = useState('');
 
+  const optionDescription = {0: '🕙', 1: '📈', 2: '💾'}
+
   const startJob = async () => {
     setIsLoading(true);
     
@@ -54,17 +56,22 @@ function Websocket() {
       disabled={isLoading}
       onClick={!isLoading ? startJob : null}
       className="Button">
-      { isLoading ? 'Training model (' + progress + ' %)' : 'Click to train' }
+      { isLoading ? '🧠 Training model (' + progress + ' %)' : '🚀 Click to train' }
       </Button>
-      <br />
-      <ToggleButtonGroup type="checkbox" value={option} onChange={handleChange}>
-      <ToggleButton variant="outline-success" size="sm" value={1} disabled={isLoading}>Option 1</ToggleButton>
-      <ToggleButton variant="outline-success" size="sm" value={2} disabled={isLoading}>Option 2</ToggleButton>
-      <ToggleButton variant="outline-success" size="sm" value={3} disabled={isLoading}>Option 3</ToggleButton>      
-      </ToggleButtonGroup>
-      { option.length > 0
-          ? <div>Train with options: {option?.reduce((a, b) => {return a + ' ' + b}, '')}</div>
-          : null
+      <br />      
+      { isLoading
+          ? option.length ?
+              option.length === 1 ?
+                <div>Training with option: { optionDescription[option[0][0]]}</div>
+              : <div>Training with options: { option.map((i) => {return optionDescription[i[0]]}) }</div>
+            : null
+          : <ToggleButtonGroup type="checkbox" value={option} onChange={handleChange}>
+            {Object.keys(optionDescription).map((key) => {
+              return (
+                <ToggleButton variant="outline-success" size="sm" value={key+1} disabled={isLoading}>{optionDescription[key]}</ToggleButton>    
+              )
+            })}
+            </ToggleButtonGroup>
       }
       <br />
       { time }

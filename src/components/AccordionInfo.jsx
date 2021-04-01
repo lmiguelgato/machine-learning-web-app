@@ -9,15 +9,15 @@ function AccordionInfo() {
     <Card>
         <Card.Header>
         <Accordion.Toggle as={Button} variant="link" eventKey="0">
-            What is the difference between options 1, 2, and 3?
+            What is the difference between options 🕙, 📈, and 💾?
         </Accordion.Toggle>
         </Card.Header>
         <Accordion.Collapse eventKey="0">
         <Card.Body>
-            <b>Option 1</b> optimizes the model for low latency. <br />
-            <b>Option 2</b> optimizes the model for high accuracy. <br />
-            <b>Option 3</b> optimizes the model for low memory usage. <br />
-            <em>If more than one option is selected, the model will try to optimize each metric when possible.</em>
+            🕙 optimizes the model for low latency. <br />
+            📈 optimizes the model for high accuracy. <br />
+            💾 optimizes the model for low memory usage. <br />
+            <em>If more than one option is selected, the model will try to optimize each metric when possible.<br />If none is selected, the default training settings will be used.</em>
         </Card.Body>
         </Accordion.Collapse>
     </Card>
