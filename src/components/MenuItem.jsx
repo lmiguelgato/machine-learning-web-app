@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
+import React, { useState } from 'react'
+import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 
-function Info() {
+export const About = () => {
     const [show, setShow] = useState(false);
 
   return (
@@ -25,4 +25,11 @@ function Info() {
   );
 }
 
-export default Info;
+export const ChangeRoute = (props) => {
+
+return (
+  <>    
+    <Button href={props.link}>{props.label}</Button>
+  </>
+);
+}
