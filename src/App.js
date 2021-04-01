@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       <Navbar dark color="primary">
       <div className="container">
-        <NavbarBrand href="/">Awesome web app using React and Flask.</NavbarBrand>
+        <NavbarBrand href="/">Machine Learning web app</NavbarBrand>
         <Info />
       </div>
       </Navbar>
