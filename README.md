@@ -1,4 +1,4 @@
-# Machine-Learning-web-app
+# Machine Learning web app
 A cool web app for machine learning, using React.js to build the UI, and using Flask for the API.
 
 Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
@@ -66,4 +66,4 @@ It correctly bundles React in production mode, optimizes the build for the best 
 The build is minified and the filenames include the hashes.\
 The app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+See the section about deployment from [Facebook's repository](https://facebook.github.io/create-react-app/docs/deployment) for more information.
