@@ -6,4 +6,11 @@
 .Message {
   color: rgb(218, 132, 74);
   background-color: rgb(255, 255, 255);
+  margin-top: 10px;
+  margin-bottom: 50px;
+}
+
+.Button {
+  margin-top: 100px;
+  margin-bottom: 20px;
 }
