@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import Websocket from './components/Websocket';
