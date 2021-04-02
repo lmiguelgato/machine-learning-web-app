@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import Websocket from './components/Websocket';
-import Button from 'react-bootstrap/Button';
 import AccordionInfo from './components/AccordionInfo';
 import { About, ChangeRoute } from './components/MenuItem';
 import MLCamera from './components/MLCamera';

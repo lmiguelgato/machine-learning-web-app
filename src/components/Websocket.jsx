@@ -49,11 +49,18 @@ function Websocket(props) {
   const handleChange = (val) => setOption(val);
 
   return (
-    <div>      
+    <div>
       <ToggleButtonGroup name="options" value={option} type={props.type} onChange={handleChange}>
         {Object.keys(optionDescription).map((key) => {
           return (
-            <ToggleButton disabled={isLoading} variant="outline-success" size="sm" value={key+1} disabled={isLoading}>{optionDescription[key]}</ToggleButton>    
+            <ToggleButton
+            key={key}
+            disabled={isLoading}
+            variant="outline-success"
+            size="sm"
+            value={key+1}>
+              {optionDescription[key]}
+            </ToggleButton>    
           )
         })}
       </ToggleButtonGroup>
