@@ -4,6 +4,7 @@ import uuid
 from requests import post
 from datetime import datetime
 from celery import Celery
+from datauri import DataURI
 
 from flask import (
     Flask,
@@ -86,6 +87,19 @@ def longtask():
     return make_response(
         jsonify(
             {'status': f"Started at {datetime.now().strftime('%H:%M:%S')}"}
+            )
+        )
+
+
+@app.route('/capture', methods=['POST'])
+def capture():
+    data_uri = request.json['data_uri']
+    uri = DataURI(data_uri)
+    img = uri.data
+
+    return make_response(
+        jsonify(
+            {'data_uri': f'{uri.mimetype} received'}
             )
         )
 

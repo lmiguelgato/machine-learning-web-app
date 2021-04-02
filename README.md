@@ -21,7 +21,7 @@ For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 For example, if you are on Linux or Mac, execute `./run-redis.sh` to install and/or launch a private copy. If running this bash script for the first time, execution permission might be needed: `chmod +x run-redis.sh`
 
 :three: Start a Celery worker (in another terminal instance) by running:\
-`celery -A main.celery worker --loglevel=info`
+`celery -A main.celery worker --loglevel=info -E`
 
 :four: Start the Flask application (in another terminal instance) by running:\
 `python main.py`
