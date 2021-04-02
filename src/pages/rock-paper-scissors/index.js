@@ -8,7 +8,8 @@ const RockPaperScissors = (props) => {
             <MLCamera
                 screenshotFormat="image/jpeg"
                 height="200px"
-                endpoint={props.endpoint}/>
+                endpoint={props.endpoint}
+                select={props.select}/>
             { props.children }
         </>
     );
