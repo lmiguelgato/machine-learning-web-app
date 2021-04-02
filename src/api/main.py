@@ -1,3 +1,4 @@
+import io
 import random
 import time
 import uuid
@@ -5,6 +6,11 @@ from requests import post
 from datetime import datetime
 from celery import Celery
 from datauri import DataURI
+import PIL.Image as Image
+import tensorflow as tf
+
+from core.models import three_classes_classifier
+from core.constant import LOCAL_STORAGE
 
 from flask import (
     Flask,
@@ -95,11 +101,24 @@ def longtask():
 def capture():
     data_uri = request.json['data_uri']
     uri = DataURI(data_uri)
-    img = uri.data
+
+    screenshot_format = request.json['screenshot_format']
+    tx_data_type, tx_data_format = screenshot_format.split('/')
+    rx_data_type, rx_data_format = uri.mimetype.split('/')
+
+    assert tx_data_type == rx_data_type, f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}."
+    assert tx_data_format == rx_data_format, f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}."
+
+    if rx_data_type == 'image':
+        image = Image.open(io.BytesIO(uri.data))
+        image.save(f"{LOCAL_STORAGE}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
+        ack = f"'{uri.mimetype}' received. Ok."
+    else:
+        ack = f"Unexpected '{uri.mimetype}' received."
 
     return make_response(
         jsonify(
-            {'data_uri': f'{uri.mimetype} received'}
+            {'ack': ack}
             )
         )
 

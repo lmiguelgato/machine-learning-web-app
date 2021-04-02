@@ -133,3 +133,4 @@ src/api/redis-stable
 
 # Node.js modules
 node_modules
+src/api/core/data

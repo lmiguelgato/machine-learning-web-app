@@ -14,7 +14,8 @@ const Camera = (props) => {
 
         const api_response = await axios.post(
             props.endpoint,
-            {data_uri: imageSrc}
+            {data_uri: imageSrc,
+            screenshot_format: props.screenshotFormat}
         );
         console.log(api_response)
     }, [webcamRef]);
