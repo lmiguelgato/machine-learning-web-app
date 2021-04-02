@@ -8,6 +8,7 @@ import RockPaperScissors from './pages/rock-paper-scissors'
 
 // Components
 import MenuBar from './components/MenuBar'
+import Websocket from './components/WebSocket/index';
 
 // Styles
 import './App.css';
@@ -28,11 +29,20 @@ function App() {
           </Route>
 
           <Route path="/webcam">
-            <WebCam endpoint={ENDPOINT}/>
+            <WebCam endpoint={ENDPOINT}>
+              <header className="App-header">
+                <Websocket endpoint={ENDPOINT} options={{0: '🕙', 1: '📈', 2: '💾'}} type="checkbox"/>
+              </header>
+            </WebCam>
           </Route>
 
           <Route path="/rock-paper-scissors">
-            <RockPaperScissors endpoint={ENDPOINT}/>
+            <RockPaperScissors endpoint={ENDPOINT}>
+              <header className="App-header">
+              {/* nRocks + ' -- ' + nPapers + ' -- ' + nScissors */}
+              <Websocket endpoint={ENDPOINT} options={{0: '✊', 1: '✋', 2: '✌️'}} type="radio"/>
+              </header>
+            </RockPaperScissors>
           </Route>
         </Switch>
       </BrowserRouter>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
-import ToggleButton from 'react-bootstrap/ToggleButton'
 import axios from 'axios';
 import socketIOClient from 'socket.io-client';
+
+import CheckBox from '../CheckBox'
+import RadioButton from '../RadioButton'
 
 
 const WebSocket = (props) => {
@@ -45,33 +46,20 @@ const WebSocket = (props) => {
         }
     });
     }, [])
-    
-    const handleChange = (val) => setOption(val);
 
     return (
         <div>
-            <ToggleButtonGroup name="options" value={option} type={props.type} onChange={handleChange}>
-                {Object.keys(optionDescription).map((key) => {
-                    return (
-                    <ToggleButton
-                        key={key}
-                        disabled={isLoading}
-                        variant="outline-success"
-                        size="sm"
-                        value={key+1}>
-                        {optionDescription[key]}
-                    </ToggleButton>    
-                    )
-                })}
-            </ToggleButtonGroup>
-            <br />
-            { isLoading
-                ? (option.length && props.type === "checkbox") 
-                ? option.length === 1 
-                    ? <div>Training with option: { optionDescription[option[0][0]]}</div>
-                    : <div>Training with options: { option.map((i) => {return optionDescription[i[0]]}) }</div>
-                : null
-                : null
+            {props.type === 'checkbox'
+                ? <CheckBox
+                    optionDescription={optionDescription}
+                    isLoading={isLoading}
+                    option={option}
+                    setOption={setOption}/>
+                : <RadioButton
+                    optionDescription={optionDescription}
+                    isLoading={isLoading}
+                    option={option}
+                    setOption={setOption}/>
             }
             <br />
             <Button
