@@ -10,7 +10,7 @@ const Camera = (props) => {
 
     const takePicture = React.useCallback(
     async () => {
-        if (props.select != undefined && props.select >= 0) {  // TODO: else, ask user to pick and option
+        if (props.select !== undefined && props.select >= 0) {  // TODO: else, ask user to pick and option
             const imageSrc = webcamRef.current.getScreenshot();
 
             const api_response = await axios.post(
@@ -21,7 +21,7 @@ const Camera = (props) => {
             );
             console.log(api_response)
         }
-    }, [webcamRef, props.select]);
+    }, [webcamRef, props.select, props.screenshotFormat, props.endpoint]);
 
     const toggleOnOff = () => {
         if (capture) {

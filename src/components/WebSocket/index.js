@@ -44,7 +44,7 @@ const WebSocket = (props) => {
         setStatus(data.status);
         }
     });
-    }, [])
+    }, [ENDPOINT])
 
     return (
         <div>
