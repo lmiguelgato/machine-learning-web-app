@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Webcam from "react-webcam";
 import * as tf from '@tensorflow/tfjs';
@@ -6,8 +6,25 @@ import * as tf from '@tensorflow/tfjs';
 
 function MLCamera(props) {
   const [capture, setCapture] = useState(false);
+  const [batchedImage, setBatchedImage] = useState([]);
 
   const webcamRef = React.useRef(null);
+
+  useEffect(() => {return async () => {
+    const mobilenet = await loadMobilenet();
+    tf.tidy(() => mobilenet.predict(batchedImage));
+  }
+  }, [])
+
+  async function loadMobilenet() {
+    const mobilenet = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224/model.json');
+    const layer = mobilenet.getLayer('conv_pw_13_relu');
+    return tf.model({inputs: mobilenet.inputs, outputs: layer.output});
+  }
+
+  useEffect(() => {
+    console.log('useEffect batchedImage')    
+  }, [batchedImage])
 
   const takePicture = React.useCallback(
     () => {
@@ -16,7 +33,7 @@ function MLCamera(props) {
         const tensorImage = tf.browser.fromPixels(imageData);
         const reversedImage = tensorImage.reverse(1);
         const croppedImage = cropImage(reversedImage);
-        const batchedImage = croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+        setBatchedImage(croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1)));
       });
     },
     [webcamRef]
