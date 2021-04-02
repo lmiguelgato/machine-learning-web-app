@@ -22,7 +22,7 @@ const WebSocket = (props) => {
         setIsLoading(true);
 
         const api_response = await axios.post(
-            ENDPOINT + 'job',
+            ENDPOINT + '/job',
             {user_id: userId}
         );
 

@@ -9,7 +9,7 @@ const WebCam = (props) => {
             <MLCamera
                 screenshotFormat="image/jpeg"
                 height="200px"
-                endpoint={props.endpoint + 'capture'}/>
+                endpoint={props.endpoint}/>
             { props.children }
             <AccordionInfo />
         </>
