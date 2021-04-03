@@ -1,4 +1,4 @@
-"""Machine learning models
+"""Machine learning models and routines
 """
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D

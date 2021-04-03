@@ -11,8 +11,6 @@ from celery import Celery
 from datauri import DataURI
 import PIL.Image as Image
 
-from core.constant import LOCAL_STORAGE, RPS_OPTIONS
-
 from flask import (
     Flask,
     make_response,
@@ -30,6 +28,8 @@ from flask_socketio import (
     leave_room
 )
 from flask_cors import CORS
+
+from core.constant import LOCAL_STORAGE, RPS_OPTIONS
 
 
 app = Flask(__name__)
