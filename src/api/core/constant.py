@@ -1,3 +1,7 @@
+"""Constants definition
+"""
+
+
 LOCAL_STORAGE = './data'
 
 RPS_OPTIONS = {

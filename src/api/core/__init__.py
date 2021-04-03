@@ -1,3 +1,5 @@
+"""Initialize module requirements
+"""
 import os
 
 
