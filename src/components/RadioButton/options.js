@@ -9,14 +9,14 @@ const Options = (props) => {
         <ToggleButtonGroup name="options" value={props.option} type="radio" onChange={handleChange}>
             {Object.keys(props.optionDescription).map((key) => {
                 return (
-                <ToggleButton
-                    key={key}
-                    disabled={props.isLoading}
-                    variant="outline-success"
-                    size="sm"
-                    value={key+1}>
-                    {props.optionDescription[key]}
-                </ToggleButton>    
+                    <ToggleButton
+                        key={key}
+                        disabled={props.isLoading}
+                        variant="outline-success"
+                        size="sm"
+                        value={key+1}>
+                        { props.optionDescription[key] }
+                    </ToggleButton>
                 )
             })}
         </ToggleButtonGroup>

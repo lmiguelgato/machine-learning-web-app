@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 // Pages
@@ -18,8 +18,9 @@ const CAPTURE_ROUTE = `${ENDPOINT}/capture`
 
 
 function App() {
-  return (
-    
+  const [select, setSelect] = useState(-1)
+
+  return (    
     <div className="App">
       <MenuBar/>
 
@@ -31,14 +32,22 @@ function App() {
 
           <Route path="/webcam">
             <WebCam endpoint={CAPTURE_ROUTE}>
-              <Websocket endpoint={ENDPOINT} options={{0: '🕙', 1: '📈', 2: '💾'}} type="checkbox"/>
+              <Websocket
+                endpoint={ENDPOINT}
+                options={{0: '🕙', 1: '📈', 2: '💾'}}
+                type="checkbox"/>
             </WebCam>
           </Route>
 
           <Route path="/rock-paper-scissors">
-            <RockPaperScissors endpoint={CAPTURE_ROUTE}>
+            <RockPaperScissors select={select} endpoint={CAPTURE_ROUTE}>
               {/* nRocks + ' -- ' + nPapers + ' -- ' + nScissors */}
-              <Websocket endpoint={ENDPOINT} options={{0: '✊', 1: '✋', 2: '✌️'}} type="radio"/>
+              <Websocket
+                select={select}
+                setSelect={setSelect}
+                endpoint={ENDPOINT}
+                options={{0: '✊', 1: '✋', 2: '✌️'}}
+                type="radio"/>
             </RockPaperScissors>
           </Route>
         </Switch>

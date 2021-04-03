@@ -14,8 +14,7 @@ const WebSocket = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userId, setUserId] = useState('');
     const [status, setStatus] = useState('');
-    const [progress, setProgress] = useState(0);
-    const [option, setOption] = useState([]);
+    const [progress, setProgress] = useState(0);    
     const [time, setTime] = useState('');
 
     const startJob = async () => {
@@ -45,7 +44,7 @@ const WebSocket = (props) => {
         setStatus(data.status);
         }
     });
-    }, [])
+    }, [ENDPOINT])
 
     return (
         <div>
@@ -53,13 +52,13 @@ const WebSocket = (props) => {
                 ? <CheckBox
                     optionDescription={optionDescription}
                     isLoading={isLoading}
-                    option={option}
-                    setOption={setOption}/>
+                    option={props.select}
+                    setOption={props.setSelect}/>
                 : <RadioButton
                     optionDescription={optionDescription}
                     isLoading={isLoading}
-                    option={option}
-                    setOption={setOption}/>
+                    option={props.select}
+                    setOption={props.setSelect}/>
             }
             <br />
             <Button
