@@ -1,3 +1,4 @@
+wheel==0.36.2
 amqp==5.0.5
 appdirs==1.4.3
 bidict==0.21.2
@@ -52,4 +53,3 @@ vine==5.0.0
 wcwidth==0.2.5
 webencodings==0.5.1
 Werkzeug==1.0.1
-wheel==0.36.2
