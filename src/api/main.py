@@ -1,5 +1,6 @@
 """Main module of the API
 """
+import os
 import io
 import random
 import time
@@ -30,8 +31,20 @@ from flask_socketio import (
 )
 from flask_cors import CORS
 
-import constant
+LOCAL_STORAGE = './data'
 
+RPS_OPTIONS = {
+    '0': 'rock',
+    '1': 'paper',
+    '2': 'scissor'
+}
+
+# Create folders to store images if not existing
+try:
+    for v in RPS_OPTIONS.values():
+        os.makedirs(LOCAL_STORAGE + '/' + v, exist_ok=True)
+except FileExistsError:
+    pass
 
 app = Flask(__name__)
 app.clients = {}
@@ -123,11 +136,11 @@ def capture():
 
     selected = request.json['selected']
 
-    if selected not in constant.RPS_OPTIONS:
+    if selected not in RPS_OPTIONS:
         ack = f"Unexpected '{selected}' option."
     elif rx_data_type == 'image':
         image = Image.open(io.BytesIO(uri.data))
-        save_path = f"{constant.LOCAL_STORAGE}/{constant.RPS_OPTIONS[selected]}"
+        save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}"
         image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
         ack = f"'{uri.mimetype}' received. Ok."
     else:
