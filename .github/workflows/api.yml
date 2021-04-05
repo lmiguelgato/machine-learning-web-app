@@ -36,4 +36,4 @@ jobs:
         pylint src/api/
     - name: Test with pytest
       run: |
-        pytest src/api/ disable=W0511
+        pytest src/api/ --disable=W0511
