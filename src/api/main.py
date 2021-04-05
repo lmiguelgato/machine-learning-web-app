@@ -127,8 +127,8 @@ def capture():
         ack = f"Unexpected '{selected}' option."
     elif rx_data_type == 'image':
         image = Image.open(io.BytesIO(uri.data))
-        image.save(f"{constant.LOCAL_STORAGE}/{constant.RPS_OPTIONS[selected]}\
-            /capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
+        save_path = f"{constant.LOCAL_STORAGE}/{constant.RPS_OPTIONS[selected]}"
+        image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
         ack = f"'{uri.mimetype}' received. Ok."
     else:
         ack = f"Unexpected '{uri.mimetype}' received."
