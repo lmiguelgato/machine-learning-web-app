@@ -20,6 +20,7 @@ from flask import (
     jsonify,
     current_app
     )
+from flask.logging import create_logger
 from flask_socketio import (
     SocketIO,
     emit,
@@ -29,7 +30,7 @@ from flask_socketio import (
 )
 from flask_cors import CORS
 
-from core.constant import LOCAL_STORAGE, RPS_OPTIONS
+import constant
 
 
 app = Flask(__name__)
@@ -45,6 +46,8 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
+logger = create_logger(app)
 
 
 @celery.task()
@@ -120,11 +123,11 @@ def capture():
 
     selected = request.json['selected']
 
-    if selected not in RPS_OPTIONS:
+    if selected not in constant.RPS_OPTIONS:
         ack = f"Unexpected '{selected}' option."
     elif rx_data_type == 'image':
         image = Image.open(io.BytesIO(uri.data))
-        image.save(f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}\
+        image.save(f"{constant.LOCAL_STORAGE}/{constant.RPS_OPTIONS[selected]}\
             /capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
         ack = f"'{uri.mimetype}' received. Ok."
     else:
@@ -155,7 +158,7 @@ def events_connect():
     userid = str(uuid.uuid4())
     session['userid'] = userid
     current_app.clients[userid] = request.namespace
-    app.logger.info('Client connected! Assigned user id %s.', userid)
+    logger.info('Client connected! Assigned user id %s.', userid)
     room = f'uid-{userid}'
     join_room(room)
     emit('connected', {'user_id': userid})
@@ -176,7 +179,7 @@ def events_disconnect():
     del current_app.clients[session['userid']]
     room = f"uid-{session['userid']}"
     leave_room(room)
-    app.logger.info('Client %s disconnected.', session['userid'])
+    logger.info('Client %s disconnected.', session['userid'])
 
 
 if __name__ == '__main__':
