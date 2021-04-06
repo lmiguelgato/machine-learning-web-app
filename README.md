@@ -11,7 +11,7 @@ Although completely redesigned, this project is inspired on some example code fr
 
 To setup the API, make sure to `cd src/api/` and then:
 
-:zero: Create a virtual environment and activate it.\
+:zero: Create a Python 3.8 virtual environment and activate it.\
 For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 
 :one: Install the requirements:\
@@ -34,7 +34,7 @@ This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `py
 
 ### React app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Make sure you have [Node.js JavaScript runtime](https://nodejs.org/) and [Yarn package manager](https://yarnpkg.com/) installed. This web app was developed with Node.js v15.13.0 (that comes with `npm` 7.7.6), and Yarn 1.22.10.
 
 To setup the web app for development, make sure you are on the project root directory.\
 Then install all required Node.js modules by running `yarn install`
