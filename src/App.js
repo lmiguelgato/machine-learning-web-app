@@ -33,6 +33,8 @@ function App() {
           <Route path="/webcam">
             <WebCam endpoint={CAPTURE_ROUTE}>
               <Websocket
+                select={select}
+                setSelect={setSelect}
                 endpoint={ENDPOINT}
                 options={{0: '🕙', 1: '📈', 2: '💾'}}
                 type="checkbox"/>
