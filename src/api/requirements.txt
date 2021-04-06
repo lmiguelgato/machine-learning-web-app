@@ -1,11 +1,11 @@
-amqp==5.0.5
+amqp==5.0.6
 appdirs==1.4.3
 bidict==0.21.2
-billiard==3.6.3.0
+billiard==3.6.4.0
 CacheControl==0.12.6
 celery==5.0.5
-certifi==2019.11.28
-chardet==3.0.4
+certifi==2020.12.5
+chardet==4.0.0
 click==7.1.2
 click-didyoumean==0.0.3
 click-plugins==1.1.1
@@ -21,7 +21,7 @@ Flask-SocketIO==5.0.1
 gevent==21.1.2
 gevent-websocket==0.10.1
 html5lib==1.0.1
-idna==2.8
+idna==2.10
 ipaddr==2.2.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
