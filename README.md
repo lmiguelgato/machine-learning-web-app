@@ -15,7 +15,10 @@ To set up the API, you must:
 For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 
 :one: -Install the requirements:\
-`pip install -r requirements.txt`
+`pip install -r requirements.txt`\
+Install tensorflow (not included in requirements, becauses it causes compatibility issues with MacOS):\
+- Not MacOS users: `pip install tensorflow==2.4.0-rc0`\
+- MacOS users (specially those with Apple Silicon chips): follow [this instructions](https://github.com/apple/tensorflow_macos#readme), using the existing virtual environment from :zero:.
 
 :two: -Start a local Redis server.\
 For example, if you are on Linux or Mac, execute `api/run-redis.sh` to install and/or launch a private copy.
