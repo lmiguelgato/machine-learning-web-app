@@ -18,7 +18,7 @@ For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 `pip install -r requirements.txt`
 
 :two: Start a local Redis server.\
-For example, if you are on Linux or Mac, execute `.api/run-redis.sh` to install and/or launch a private copy. If running this bash script for the first time, execution permission might be needed: `chmod +x run-redis.sh`
+For example, if you are on Linux or Mac, execute `api/run-redis.sh` to install and/or launch a private copy.
 
 :three: Start a Celery worker (in another terminal instance) by running:\
 `celery -A main.celery worker --loglevel=info -E`
@@ -30,7 +30,7 @@ A development server for the API will be running on [http://localhost:5000](http
 
 #### Running tests :microscope:
 
-This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `pytest` from `src/api` to run all tests.
+This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `pytest` to run all tests.
 
 ### React app
 
