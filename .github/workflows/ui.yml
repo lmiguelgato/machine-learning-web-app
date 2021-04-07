@@ -22,6 +22,6 @@ jobs:
     - name: Install JS dependencies
       run: cd static/ && yarn install
     - name: Test
-      run: yarn test
+      run: cd static/ && yarn test
     - name: Build
-      run: yarn build
+      run: cd static/ && yarn build
