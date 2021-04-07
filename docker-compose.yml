@@ -13,8 +13,6 @@ services:
     command: [celery, -A, main.celery, worker, --loglevel=info, -E]
     depends_on:
       - "redis"
-    env_file:
-      - ".env"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "${DOCKER_STOP_GRACE_PERIOD:-3s}"
 
@@ -24,8 +22,6 @@ services:
       - "5000:80"
     depends_on:
       - "redis"
-    env_file:
-      - ".env"
     healthcheck:
       test: "${DOCKER_HEALTHCHECK_TEST:-curl localhost:8000/healthy}"
       interval: "60s"
