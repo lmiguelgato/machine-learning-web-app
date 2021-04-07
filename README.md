@@ -54,7 +54,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### API
 
-The API, as well as Celery and Redis instances live in separate Docker containers, which can be built by running `make run`
+The API, as well as Celery and Redis instances live in separate Docker containers, which can be built by running `make run` inside `docker/`
 
 The API is served using [NGINX](https://nginx.org/) and [uWSGI](https://uwsgi-docs.readthedocs.io/), which are bundled and ready for deployment in the API container.
 
