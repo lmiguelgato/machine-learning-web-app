@@ -16,8 +16,8 @@ For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 
 :one: -Install the requirements: \
 `pip install -r requirements.txt` \
-Install tensorflow (not included in `requirements.txt`, because there are still no matching releases for Apple Silicon chips): \
-- Not MacOS users: `pip install tensorflow==2.4.0-rc0` \
+Install tensorflow (not included in `requirements.txt`, because there are still no matching releases for Apple Silicon chips):
+- Not MacOS users: `pip install tensorflow==2.4.0-rc0`
 - MacOS users (specially those with Apple Silicon chips): follow [this instructions](https://github.com/apple/tensorflow_macos#readme), using the existing virtual environment from :zero:
 
 :two: -Start a local Redis server.\
