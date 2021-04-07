@@ -12,16 +12,19 @@ const Camera = (props) => {
     async () => {
       if (props.select !== undefined && props.select >= 0) {
         const imageSrc = webcamRef.current.getScreenshot()
-
-        const apiResponse = await axios.post(
-          props.endpoint,
-          {
-            data_uri: imageSrc,
-            screenshot_format: props.screenshotFormat,
-            selected: props.select[0]
-          }
-        )
-        console.log(apiResponse)
+        if (imageSrc !== null) {
+          const apiResponse = await axios.post(
+            props.endpoint,
+            {
+              data_uri: imageSrc,
+              screenshot_format: props.screenshotFormat,
+              selected: props.select[0]
+            }
+          )
+          console.log(apiResponse)
+        } else {
+          toggleOnOff()
+        }
       }
     }, [webcamRef, props.select, props.screenshotFormat, props.endpoint])
 
@@ -35,6 +38,7 @@ const Camera = (props) => {
 
   return (
       <>
+        <br />
         { capture
           ? <>
               <Webcam audio={false}
@@ -52,7 +56,7 @@ const Camera = (props) => {
                 📷 Capture
               </Button>
             </>
-          : null
+          : 'Ready to start? Turn on the camera and allow this app to use it.'
           }
           <Button
               className="Button"
