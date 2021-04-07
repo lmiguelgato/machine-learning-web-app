@@ -10,7 +10,7 @@ const Camera = (props) => {
 
   const takePicture = React.useCallback(
     async () => {
-      if (props.select !== undefined && props.select >= 0) { // TODO: else, ask user to pick and option
+      if (props.select !== undefined && props.select >= 0) {
         const imageSrc = webcamRef.current.getScreenshot()
 
         const apiResponse = await axios.post(
@@ -47,7 +47,8 @@ const Camera = (props) => {
                 variant="success"
                 size="sm"
                 onClick={takePicture}
-                className="Button">
+                className="Button"
+                disabled={props.select < 0}>
                 📷 Capture
               </Button>
             </>
