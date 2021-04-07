@@ -1,4 +1,5 @@
-  
+# This workflow will install, run tests and build the UI using Yarn
+
 name: UI
 
 on:
@@ -8,20 +9,21 @@ on:
     branches: [ main ]
 
 jobs:
-  lint-and-test:
-    name: Test
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - name: Install
-      uses: CultureHQ/actions-yarn@master
+    - name: Actions/checkout
+      uses: actions/checkout@v2
+    - name: Set up Node.js v15
+      uses: actions/setup-node@v2
       with:
-        args: install
-    - name: Build
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build
+        node-version: '15'
+    - name: Install JS dependencies
+      run: cd static/ && yarn install
+    - name: Lint JavaScript/TypeScript 
+      uses: iCrawl/action-eslint@v1
     - name: Test
-      uses: CultureHQ/actions-yarn@master
-      with:
-        args: test
+      run: yarn test
+    - name: Build
+      run: yarn build
