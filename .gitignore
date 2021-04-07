@@ -143,3 +143,7 @@ data/
 # VS Code settings
 .vscode/
 setup.cfg
+
+# Ignore yarn.lock and package-lock.json, since it will be generated from package.json during yarn install or npm install
+static/yarn.lock
+static/package-lock.json
