@@ -30,7 +30,8 @@
     "socket.io-client": "^4.0.1",
     "web-vitals": "^1.1.1",
     "@testing-library/react": "^11.2.6",
-    "@testing-library/jest-dom": "^5.11.10"
+    "@testing-library/jest-dom": "^5.11.10",
+    "eslint": "^7.23.0"
   },
   "scripts": {
     "start": "react-scripts start",
