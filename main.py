@@ -10,6 +10,7 @@ from datetime import datetime
 from requests import post
 from celery import Celery
 from datauri import DataURI
+from datauri.exceptions import InvalidDataURI
 import PIL.Image as Image
 
 from flask import (
@@ -123,7 +124,11 @@ def capture():
     """This route is triggered every time a picture was taken in the browser
     """
     data_uri = request.json['data_uri']
-    uri = DataURI(data_uri)
+
+    try:
+        uri = DataURI(data_uri)
+    except InvalidDataURI as e:
+        logger.error(e)
 
     screenshot_format = request.json['screenshot_format']
     tx_data_type, tx_data_format = screenshot_format.split('/')
