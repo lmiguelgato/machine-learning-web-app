@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import React, { useState } from 'react'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 // Pages
 import Home from './pages/home'
@@ -8,19 +8,19 @@ import RockPaperScissors from './pages/rock-paper-scissors'
 
 // Components
 import MenuBar from './components/MenuBar'
-import Websocket from './components/WebSocket/index';
+import Websocket from './components/WebSocket/index'
 
 // Styles
-import './App.css';
+import './App.css'
 
-const ENDPOINT = 'http://127.0.0.1:5000';  // TODO: define ENDPOINT only once
+// TODO: define ENDPOINT only once
+const ENDPOINT = 'http://127.0.0.1:5000'
 const CAPTURE_ROUTE = `${ENDPOINT}/capture`
 
-
-function App() {
+function App () {
   const [select, setSelect] = useState(-1)
 
-  return (    
+  return (
     <div className="App">
       <MenuBar/>
 
@@ -36,7 +36,7 @@ function App() {
                 select={select}
                 setSelect={setSelect}
                 endpoint={ENDPOINT}
-                options={{0: '🕙', 1: '📈', 2: '💾'}}
+                options={{ 0: '🕙', 1: '📈', 2: '💾' }}
                 type="checkbox"/>
             </WebCam>
           </Route>
@@ -48,14 +48,14 @@ function App() {
                 select={select}
                 setSelect={setSelect}
                 endpoint={ENDPOINT}
-                options={{0: '✊', 1: '✋', 2: '✌️'}}
+                options={{ 0: '✊', 1: '✋', 2: '✌️' }}
                 type="radio"/>
             </RockPaperScissors>
           </Route>
         </Switch>
       </BrowserRouter>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

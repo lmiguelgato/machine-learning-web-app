@@ -1,10 +1,10 @@
-import React from 'react';
-import Bar from './menu-bar';
+import React from 'react'
+import Bar from './menu-bar'
 
 const MenuBar = () => {
-    return (
-        <Bar title='Machine Learning web app 💡'/>
-    );
+  return (
+    <Bar title='Machine Learning web app 💡'/>
+  )
 }
 
-export default MenuBar;
+export default MenuBar
