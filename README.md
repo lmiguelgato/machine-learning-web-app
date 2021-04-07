@@ -9,7 +9,7 @@ Most of the processing is distributed across threads by a task queue ([Celery](h
 
 Although completely redesigned, this project is inspired on some example code from [this project](https://github.com/jwhelland/flask-socketio-celery-example), which in turn is based on [this project](https://github.com/miguelgrinberg/flask-celery-example).
 
-To setup the API, make sure to `cd src/api/` and then:
+To setup the API, you must:
 
 :zero: Create a Python 3.8 virtual environment and activate it.\
 For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
@@ -18,7 +18,7 @@ For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 `pip install -r requirements.txt`
 
 :two: Start a local Redis server.\
-For example, if you are on Linux or Mac, execute `./run-redis.sh` to install and/or launch a private copy. If running this bash script for the first time, execution permission might be needed: `chmod +x run-redis.sh`
+For example, if you are on Linux or Mac, execute `.api/run-redis.sh` to install and/or launch a private copy. If running this bash script for the first time, execution permission might be needed: `chmod +x run-redis.sh`
 
 :three: Start a Celery worker (in another terminal instance) by running:\
 `celery -A main.celery worker --loglevel=info -E`
@@ -37,9 +37,9 @@ This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `py
 Make sure you have [Node.js JavaScript runtime](https://nodejs.org/) and [Yarn package manager](https://yarnpkg.com/) installed. This web app was developed with Node.js v15.13.0 (that comes with `npm` 7.7.6), and Yarn 1.22.10.
 
 To setup the web app for development, make sure you are on the project root directory.\
-Then install all required Node.js modules by running `yarn install`
+Then install all required Node.js modules by running `yarn install` inside `static/`
 
-To run the app in the development mode, run `yarn start` which should automatically open the app in your default browser.\
+To run the app in the development mode, run `yarn start` inside `static/` which should automatically open the app in your default browser.\
 Otherwise, manually open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
@@ -47,7 +47,7 @@ You will also see any lint errors in the console.
 
 #### Running tests :microscope:
 
-Launch the test runner in the interactive watch mode by running `yarn test`\
+Launch the test runner in the interactive watch mode by running `yarn test` inside `static/`\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ## Deployment setup :rocket:
