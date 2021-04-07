@@ -22,7 +22,7 @@ jobs:
     - name: Install JS dependencies
       run: cd static/ && yarn install
     - name: Lint JavaScript/TypeScript
-      uses: lmiguelgato/action-eslint@v1.9.2-beta
+      uses: lmiguelgato/action-eslint@v1.9.2-beta.1
       with:
         custom-path: static
     - name: Test
