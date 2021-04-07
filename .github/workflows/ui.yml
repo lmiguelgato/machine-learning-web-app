@@ -21,8 +21,10 @@ jobs:
         node-version: '15'
     - name: Install JS dependencies
       run: cd static/ && yarn install
-    - name: Lint JavaScript/TypeScript 
-      uses: iCrawl/action-eslint@v1
+    - name: Lint JavaScript/TypeScript
+      uses: lmiguelgato/action-eslint@v1.9.2-beta
+      with:
+        custom-path: static
     - name: Test
       run: yarn test
     - name: Build
