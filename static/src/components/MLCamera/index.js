@@ -7,8 +7,7 @@ const MLCamera = (props) => {
       screenshotFormat={props.screenshotFormat}
       height={props.height}
       endpoint={props.endpoint}
-      select={props.select}
-      onCapture={props.onCapture}/>
+      select={props.select}/>
   )
 }
 

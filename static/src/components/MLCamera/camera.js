@@ -13,7 +13,7 @@ const Camera = (props) => {
       if (props.select !== undefined && props.select >= 0) {
         const imageSrc = webcamRef.current.getScreenshot()
         if (imageSrc !== null) {
-          const apiResponse = await axios.post(
+          await axios.post(
             props.endpoint,
             {
               data_uri: imageSrc,
@@ -21,10 +21,6 @@ const Camera = (props) => {
               selected: props.select[0]
             }
           )
-
-          if (apiResponse.data.valid_capture) {
-            props.onCapture(props.select[0])
-          }
         } else {
           toggleOnOff()
         }
