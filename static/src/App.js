@@ -31,26 +31,17 @@ function App () {
           </Route>
 
           <Route path="/webcam">
-            <WebCam endpoint={CAPTURE_ROUTE}>
-              <Websocket
-                select={select}
-                setSelect={setSelect}
-                endpoint={ENDPOINT}
-                options={{ 0: '🕙', 1: '📈', 2: '💾' }}
-                type="checkbox"/>
-            </WebCam>
+            <WebCam endpoint={CAPTURE_ROUTE} />
+            <Websocket endpoint={ENDPOINT}/>
           </Route>
 
           <Route path="/rock-paper-scissors">
-            <RockPaperScissors select={select} endpoint={CAPTURE_ROUTE}>
-              {/* nRocks + ' -- ' + nPapers + ' -- ' + nScissors */}
-              <Websocket
-                select={select}
-                setSelect={setSelect}
-                endpoint={ENDPOINT}
-                options={{ 0: '✊', 1: '✋', 2: '✌️' }}
-                type="radio"/>
-            </RockPaperScissors>
+            <RockPaperScissors
+              select={select}
+              setSelect={setSelect}
+              endpoint={CAPTURE_ROUTE}
+              options={{ 0: '✊', 1: '✋', 2: '✌️' }} />
+            <Websocket endpoint={ENDPOINT}/>
           </Route>
         </Switch>
       </BrowserRouter>
