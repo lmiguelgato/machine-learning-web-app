@@ -32,7 +32,7 @@ jobs:
         flake8 api/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Analysing the code with pylint
       run: |
-        pylint api/ --disable=W0511
+        pylint api/ --disable=W0511,C0103
     - name: Test with pytest
       run: |
         pytest api/
