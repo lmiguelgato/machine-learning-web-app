@@ -204,7 +204,7 @@ def save_capture(uri, selected):
     """
 
     save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}/"
-    save_path += f"capture_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}"
+    save_path += f"capture_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S:%f')}"
     save_path += f".{uri.mimetype.split('/')[1]}"
 
     try:
@@ -215,6 +215,7 @@ def save_capture(uri, selected):
         return False, save_path
 
     return True, save_path
+
 
 @app.route('/capture', methods=['POST'])
 def capture():
