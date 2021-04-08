@@ -22,7 +22,6 @@ from flask import (
     jsonify,
     current_app
     )
-from flask.logging import create_logger
 from flask_socketio import (
     SocketIO,
     emit,
@@ -63,8 +62,6 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
-
-logger = create_logger(app)
 
 
 @celery.task()
@@ -169,7 +166,7 @@ def check_image_format(data_uri, screenshot_format, selected):
     try:
         uri = DataURI(data_uri)
     except InvalidDataURI as e:
-        logger.error(e)
+        app.logger.error(e)
 
     # Check format and type of data received
     tx_data_type, tx_data_format = screenshot_format.split('/')
@@ -195,6 +192,7 @@ def check_image_format(data_uri, screenshot_format, selected):
         causes.append(f"Unexpected '{selected}' option.")
 
     if valid:
+        app.logger.debug('Valid image received, saving ...')
         image = Image.open(io.BytesIO(uri.data))
         save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}"
         image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
@@ -243,7 +241,7 @@ def events_connect():
     userid = str(uuid.uuid4())
     session['userid'] = userid
     current_app.clients[userid] = request.namespace
-    logger.info('Client connected! Assigned user id %s.', userid)
+    app.logger.info('Client connected! Assigned user id %s.', userid)
     room = f'uid-{userid}'
     join_room(room)
     emit('connected', {'user_id': userid})
@@ -264,7 +262,7 @@ def events_disconnect():
     del current_app.clients[session['userid']]
     room = f"uid-{session['userid']}"
     leave_room(room)
-    logger.info('Client %s disconnected.', session['userid'])
+    app.logger.info('Client %s disconnected.', session['userid'])
 
 
 if __name__ == '__main__':
