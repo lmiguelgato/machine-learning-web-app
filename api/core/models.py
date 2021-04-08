@@ -11,7 +11,11 @@ data_augmentation = tf.keras.Sequential([
   tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
 ])
 
-mobile_net = tf.keras.applications.MobileNetV2(include_top=False, weights='imagenet')
+mobile_net = tf.keras.applications.MobileNetV2(
+    input_shape=(160, 160, 3),
+    include_top=False,
+    weights='imagenet'
+    )
 # print(mobile_net.summary())
 
 # TODO: define a class instead
@@ -25,11 +29,10 @@ outputs = Dense(3, activation='softmax')(x)
 
 three_classes_classifier = tf.keras.Model(inputs, outputs)
 
-""" image = Image.open(io.BytesIO(uri.data))
-x = tf.keras.preprocessing.image.img_to_array(image)
-print('--------------------', x.shape)
-x = tf.image.resize(x, [160, 160])
-print('--------------------', x.shape)
-x = three_classes_classifier.predict(x[tf.newaxis, ...])
-print('--------------------', x)
-# print(three_classes_classifier.summary()) """
+# Compile the model
+base_learning_rate = 0.0001
+three_classes_classifier.compile(
+    optimizer=tf.keras.optimizers.Adam(lr=base_learning_rate),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
+    )
