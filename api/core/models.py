@@ -19,7 +19,7 @@ mobile_net = tf.keras.applications.MobileNetV2(
     include_top=False,
     weights='imagenet'
     )
-# print(mobile_net.summary())
+mobile_net.trainable = False
 
 # TODO: define a class instead
 inputs = tf.keras.Input(shape=tfconfig.IMG_SIZE + (3,))
