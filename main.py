@@ -84,6 +84,17 @@ def clients():
     return make_response(jsonify({'clients': list(app.clients.keys())}))
 
 
+@app.route('/storage', methods=['POST'])
+def storage():
+    """Get information regarding the local storage
+    """
+    return make_response(jsonify(
+        {
+            'storage': STORAGE_TRACKER
+        })
+        )
+
+
 @app.route('/job', methods=['POST'])
 def longtask():
     """This task will respond with the current time, and will trigget a celery task
@@ -117,7 +128,9 @@ def predict_task(room, url, data_uri):    # TODO: implement this
     # Get probabilities for each class
     tensor_image = tf.keras.preprocessing.image.img_to_array(image)
     tensor_image_resized = tf.image.resize(tensor_image, [160, 160])
-    class_probabilities = models.three_classes_classifier.predict(tensor_image_resized[tf.newaxis, ...])
+    class_probabilities = models.three_classes_classifier.predict(
+        tensor_image_resized[tf.newaxis, ...]
+        )
 
     meta = {'current': 100,
             'total': 100,
@@ -215,7 +228,7 @@ def capture():
         app.logger.debug('Valid image received, saving ...')
         did_save, img_path = save_capture(uri, selected)
         if did_save:
-            STORAGE_TRACKER[RPS_OPTIONS[selected]] += [img_path]
+            STORAGE_TRACKER[selected] += [img_path]
             app.logger.debug("Successfully saved '%s' in '%s'", RPS_OPTIONS[selected], img_path)
         else:
             app.logger.debug("Unable to save '%s' in '%s'", RPS_OPTIONS[selected], img_path)

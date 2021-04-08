@@ -38,9 +38,9 @@ except FileExistsError:
     pass
 
 # Find all images in local storage, and group them by label
-for label in RPS_OPTIONS.values():
+for index, label in RPS_OPTIONS.items():
     onlyfiles = [
         f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
         if isfile(join(f"{LOCAL_STORAGE}/{label}/", f))     # TODO: ignore non-image files
         ]
-    STORAGE_TRACKER[label] = onlyfiles
+    STORAGE_TRACKER[index] = onlyfiles
