@@ -1,6 +1,8 @@
 """Main module of the API
 """
 import os
+from os import listdir
+from os.path import isfile, join
 import io
 import random
 import time
@@ -41,11 +43,20 @@ from api.core import models
 
 LOCAL_STORAGE = './data'
 
+STORAGE_TRACKER = dict()
+
 RPS_OPTIONS = {
     '0': 'rock',
     '1': 'paper',
     '2': 'scissor'
 }
+
+for label in RPS_OPTIONS.values():
+    onlyfiles = [
+        f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
+        if isfile(join(f"{LOCAL_STORAGE}/{label}/", f))     # TODO: ignore non-image files
+        ]
+    STORAGE_TRACKER[label] = onlyfiles
 
 # Create folders to store images if not existing
 try:
@@ -238,6 +249,7 @@ def capture():
         app.logger.debug('Valid image received, saving ...')
         did_save, img_path = save_capture(uri, selected)
         if did_save:
+            STORAGE_TRACKER[RPS_OPTIONS[selected]] += [img_path]
             app.logger.debug("Successfully saved '%s' in '%s'", RPS_OPTIONS[selected], img_path)
         else:
             app.logger.debug("Unable to save '%s' in '%s'", RPS_OPTIONS[selected], img_path)
