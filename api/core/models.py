@@ -41,6 +41,8 @@ three_classes_classifier.compile(
 
 
 class CustomCallback(keras.callbacks.Callback):
+    """Define a simple custom callback that logs steps in training and prediction
+    """
     def on_train_begin(self, logs=None):
         keys = list(logs.keys())
         print("Starting training; got log keys: {}".format(keys))
