@@ -11,7 +11,11 @@ from requests import post
 from celery import Celery
 from api.config import celeryconfig
 from datauri import DataURI
-from datauri.exceptions import InvalidDataURI
+from datauri.exceptions import (
+    InvalidDataURI,
+    InvalidCharset,
+    InvalidMimeType
+    )
 import PIL.Image as Image
 
 from flask import (
@@ -163,7 +167,7 @@ def check_image_format(data_uri, screenshot_format, selected):
     # Extract data from URI
     try:
         uri = DataURI(data_uri)
-    except InvalidDataURI as e:
+    except (InvalidDataURI, InvalidCharset, InvalidMimeType) as e:
         app.logger.error(e)
 
     # Check format and type of data received
