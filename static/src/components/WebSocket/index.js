@@ -3,9 +3,10 @@ import Button from 'react-bootstrap/Button'
 import axios from 'axios'
 import socketIOClient from 'socket.io-client'
 
-const WebSocket = (props) => {
-  const ENDPOINT = props.endpoint
+// Constants
+import { ENDPOINT, TRAIN_ROUTE } from '../../constant'
 
+const WebSocket = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [userId, setUserId] = useState('')
   const [status, setStatus] = useState('')
@@ -16,7 +17,7 @@ const WebSocket = (props) => {
     setIsLoading(true)
 
     const apiResponse = await axios.post(
-      ENDPOINT + '/job',
+      TRAIN_ROUTE,
       { user_id: userId }
     )
 

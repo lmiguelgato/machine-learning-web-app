@@ -13,9 +13,8 @@ import Websocket from './components/WebSocket/index'
 // Styles
 import './App.css'
 
-// TODO: define ENDPOINT only once
-const ENDPOINT = 'http://127.0.0.1:5000'
-const CAPTURE_ROUTE = `${ENDPOINT}/capture`
+// Constants
+import { ENDPOINT, CAPTURE_ROUTE } from './constant'
 
 function App () {
   const [select, setSelect] = useState(-1)

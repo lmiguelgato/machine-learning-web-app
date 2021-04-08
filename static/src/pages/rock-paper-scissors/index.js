@@ -3,15 +3,16 @@ import axios from 'axios'
 import MLCamera from '../../components/MLCamera/index'
 import RadioButton from '../../components/RadioButton'
 
-const RockPaperScissors = (props) => {
-  const ENDPOINT = 'http://127.0.0.1:5000' // TODO: get from a global scope
+// Constants
+import { STORAGE_ROUTE } from '../../constant'
 
+const RockPaperScissors = (props) => {
   const [numImages, setNumImages] = useState([0, 0, 0])
 
   const getStorage = () => {
     return async () => {
       const res = await axios.post(
-        ENDPOINT + '/storage', { }
+        STORAGE_ROUTE, { }
       )
 
       const initNumImages = []
