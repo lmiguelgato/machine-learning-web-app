@@ -16,7 +16,6 @@ const RockPaperScissors = (props) => {
         height="200px"
         endpoint={props.endpoint}
         select={props.select}/>
-      { props.children }
       <br />
       <RadioButton
         optionDescription={props.options}
