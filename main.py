@@ -32,6 +32,9 @@ from flask_socketio import (
 )
 from flask_cors import CORS
 
+import tensorflow as tf
+from api.core import models
+
 LOCAL_STORAGE = './data'
 
 RPS_OPTIONS = {
@@ -119,42 +122,106 @@ def longtask():
         )
 
 
-@app.route('/capture', methods=['POST'])
-def capture():
-    """This route is triggered every time a picture was taken in the browser
-    """
-    data_uri = request.json['data_uri']
+@celery.task()
+def predict_task(room, url, _image):
+    """Get probabilities of each class, given an input image
 
+    Args:
+        room (str): room of the current user
+        url (str): URL where the status of this task will be posted
+        image (PIL.JpegImagePlugin.JpegImageFile): image to be classified
+
+    Returns:
+        dict: serializable object passed as response
+    """
+
+    uri = DataURI(_image)
+    image = Image.open(io.BytesIO(uri))
+
+    # Get embedding from DL model
+    x = tf.keras.preprocessing.image.img_to_array(image)
+    x = tf.image.resize(x, [160, 160])
+    x = models.three_classes_classifier.predict(x[tf.newaxis, ...])
+
+    meta = {'current': 100,
+            'total': 100,
+            'status': 'Done.',
+            'room': room,
+            'time': datetime.now().strftime('%H:%M:%S'),
+            }
+    post(url, json=meta)
+
+    return meta
+
+
+def check_image_format(data_uri, screenshot_format, selected):
+    """Extract data from URI and check format and type of data received
+
+    Args:
+        data_uri (str): image in data URI format
+        screenshot_format (str): data type and format
+
+    Returns:
+        (bool, list of str): is data valid?, cause(s)
+    """
+
+    # Extract data from URI
     try:
         uri = DataURI(data_uri)
     except InvalidDataURI as e:
         logger.error(e)
 
-    screenshot_format = request.json['screenshot_format']
+    # Check format and type of data received
     tx_data_type, tx_data_format = screenshot_format.split('/')
     rx_data_type, rx_data_format = uri.mimetype.split('/')
 
-    assert tx_data_type == rx_data_type, \
-        f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}."
-    assert tx_data_format == rx_data_format, \
-        f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}."
+    causes = []
+    valid = True
 
-    selected = request.json['selected']
+    if tx_data_type != rx_data_type:
+        valid = False
+        causes.append(f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}.")
+
+    if tx_data_format != rx_data_format:
+        valid = False
+        causes.append(f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}.")
+
+    if rx_data_type != 'image':
+        valid = False
+        causes.append(f"Unexpected '{uri.mimetype}' received.")
 
     if selected not in RPS_OPTIONS:
-        ack = f"Unexpected '{selected}' option."
-    elif rx_data_type == 'image':
+        valid = False
+        causes.append(f"Unexpected '{selected}' option.")
+
+    if valid:
         image = Image.open(io.BytesIO(uri.data))
         save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}"
         image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
-        ack = f"'{uri.mimetype}' received. Ok."
-    else:
-        ack = f"Unexpected '{uri.mimetype}' received."
+        causes.append(f"'{uri.mimetype}' received. Ok.")
+
+    return (valid, causes)
+
+
+@app.route('/capture', methods=['POST'])
+def capture():
+    """This route is triggered every time a picture was taken in the browser
+    """
+    # userid = request.json['user_id']
+    # room = f'uid-{userid}'
+    room = 'room'
+    data_uri = request.json['data_uri']
+    screenshot_format = request.json['screenshot_format']
+    selected = request.json['selected']
+
+    is_valid, causes = check_image_format(data_uri, screenshot_format, selected)
+
+    if is_valid:
+        predict_task.delay(room, url_for('status', _external=True, _method='POST'), data_uri)
 
     return make_response(
         jsonify({
-            'ack': ack,
-            'selected': selected
+            'ack': causes
             })
         )
 
