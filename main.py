@@ -15,6 +15,8 @@ from datauri.exceptions import (
     )
 
 import tensorflow as tf
+from tensorflow.keras.preprocessing import image_dataset_from_directory
+
 import PIL.Image as Image
 
 from flask import (
@@ -36,13 +38,13 @@ from flask_cors import CORS
 
 from flask_socketio import SocketIO
 
+from api import STORAGE_TRACKER
 from api.core import models
-from api.config import celeryconfig
-from api import (
+from api.config import celeryconfig, tfconfig
+from api.constant import (
     LOCAL_STORAGE,
-    STORAGE_TRACKER,
     RPS_OPTIONS
-    )
+)
 
 from celery import Celery
 
@@ -68,6 +70,26 @@ def training_task(room, url):   # TODO: this is the main task, which is to be im
     noun = ['neural network', 'backpropagation', 'gradient descent', 'regularization', 'weights']
     message = ''
     total = random.randint(10, 50)
+
+    train_dataset = image_dataset_from_directory(
+        LOCAL_STORAGE,
+        shuffle=True,
+        batch_size=tfconfig.BATCH_SIZE,
+        image_size=tfconfig.IMG_SIZE
+        )
+
+    train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
+
+    history = models.three_classes_classifier.fit(
+        train_dataset,
+        epochs=tfconfig.EPOCHS,
+        callbacks=[models.CustomCallback()]
+        )
+
+    acc = history.history['accuracy']
+    loss = history.history['loss']
+
+    print(acc, loss)
 
     for i in range(total):
         if not message or random.random() < 0.25:
@@ -112,7 +134,7 @@ def storage():
         )
 
 
-@app.route('/job', methods=['POST'])
+@app.route('/train', methods=['POST'])
 def longtask():
     """This task will respond with the current time, and will trigget a celery task
     """

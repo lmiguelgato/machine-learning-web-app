@@ -6,7 +6,6 @@ from os.path import isfile, join
 
 from .constant import (
     LOCAL_STORAGE,
-    STORAGE_TRACKER,
     RPS_OPTIONS
     )
 
@@ -19,6 +18,7 @@ except FileExistsError:
     pass
 
 # Find all images in local storage, and group them by label
+STORAGE_TRACKER = dict()
 for index, label in RPS_OPTIONS.items():
     onlyfiles = [
         f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
