@@ -14,6 +14,7 @@ from datauri.exceptions import (
     InvalidMimeType
     )
 
+import tensorflow as tf
 import PIL.Image as Image
 
 from flask import (
@@ -31,8 +32,7 @@ from flask_socketio import (
     leave_room
 )
 
-import tensorflow as tf
-
+from api.core import models
 from api import (
     app,
     socketio,
@@ -41,7 +41,6 @@ from api import (
     STORAGE_TRACKER,
     RPS_OPTIONS
     )
-from api.core import models
 
 
 @celery.task()
