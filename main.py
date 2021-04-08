@@ -18,6 +18,7 @@ import tensorflow as tf
 import PIL.Image as Image
 
 from flask import (
+    Flask,
     make_response,
     request,
     session,
@@ -31,16 +32,32 @@ from flask_socketio import (
     join_room,
     leave_room
 )
+from flask_cors import CORS
+
+from flask_socketio import SocketIO
 
 from api.core import models
+from api.config import celeryconfig
 from api import (
-    app,
-    socketio,
-    celery,
     LOCAL_STORAGE,
     STORAGE_TRACKER,
     RPS_OPTIONS
     )
+
+from celery import Celery
+
+
+app = Flask(__name__)
+app.clients = {}
+CORS(app)
+app.config['SECRET_KEY'] = 'top-secret!'
+
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Initialize Celery
+celery = Celery(app.name)
+celery.config_from_object(celeryconfig)
+celery.conf.update(app.config)
 
 
 @celery.task()
