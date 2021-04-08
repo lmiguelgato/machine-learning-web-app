@@ -21,7 +21,10 @@ const Camera = (props) => {
               selected: props.select[0]
             }
           )
-          console.log(apiResponse)
+
+          if (apiResponse.data.valid_capture) {
+            props.onCapture(props.select[0])
+          }
         } else {
           toggleOnOff()
         }
