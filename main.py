@@ -135,7 +135,7 @@ def predict_task(room, url, _image):
     """
 
     uri = DataURI(_image)
-    image = Image.open(io.BytesIO(uri))
+    image = Image.open(io.BytesIO(uri.data))
 
     # Get embedding from DL model
     x = tf.keras.preprocessing.image.img_to_array(image)
@@ -159,6 +159,7 @@ def check_image_format(data_uri, screenshot_format, selected):
     Args:
         data_uri (str): image in data URI format
         screenshot_format (str): data type and format
+        selected: index of the options selected on the UI
 
     Returns:
         (bool, list of str): is data valid?, cause(s)
@@ -175,32 +176,32 @@ def check_image_format(data_uri, screenshot_format, selected):
     rx_data_type, rx_data_format = uri.mimetype.split('/')
 
     causes = []
-    valid = True
+    is_valid = True
 
     if tx_data_type != rx_data_type:
-        valid = False
+        is_valid = False
         causes.append(f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}.")
 
     if tx_data_format != rx_data_format:
-        valid = False
+        is_valid = False
         causes.append(f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}.")
 
     if rx_data_type != 'image':
-        valid = False
+        is_valid = False
         causes.append(f"Unexpected '{uri.mimetype}' received.")
 
     if selected not in RPS_OPTIONS:
-        valid = False
+        is_valid = False
         causes.append(f"Unexpected '{selected}' option.")
 
-    if valid:
+    if is_valid:
         app.logger.debug('Valid image received, saving ...')
         image = Image.open(io.BytesIO(uri.data))
         save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}"
         image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
         causes.append(f"'{uri.mimetype}' received. Ok.")
 
-    return (valid, causes)
+    return (is_valid, causes)
 
 
 @app.route('/capture', methods=['POST'])
