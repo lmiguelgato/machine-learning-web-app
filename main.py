@@ -9,6 +9,7 @@ from datetime import datetime
 
 from requests import post
 from celery import Celery
+from api.config import celeryconfig
 from datauri import DataURI
 from datauri.exceptions import InvalidDataURI
 import PIL.Image as Image
@@ -55,17 +56,14 @@ CORS(app)
 app.config['SECRET_KEY'] = 'top-secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Redis
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
-
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery = Celery(app.name)
+celery.config_from_object(celeryconfig)
 celery.conf.update(app.config)
 
 
 @celery.task()
-def long_task(room, url):
+def training_task(room, url):
     """Background task that runs a long function with progress reports."""
     verb = ['Starting', 'Running', 'Updating', 'Loading', 'Checking']
     adjective = ['latest', 'optimized', 'lightweight', 'efficient', 'core']
@@ -111,7 +109,7 @@ def longtask():
     """
     userid = request.json['user_id']
     room = f'uid-{userid}'
-    long_task.delay(room, url_for('status', _external=True, _method='POST'))
+    training_task.delay(room, url_for('status', _external=True, _method='POST'))
     return make_response(
         jsonify(
             {'status': f"Started at {datetime.now().strftime('%H:%M:%S')}"}
