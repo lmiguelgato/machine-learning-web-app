@@ -80,6 +80,7 @@ def training_task(room, url):   # TODO: this is the main task, which is to be im
 
     train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
 
+    """
     history = models.three_classes_classifier.fit(
         train_dataset,
         epochs=tfconfig.EPOCHS,
@@ -90,6 +91,7 @@ def training_task(room, url):   # TODO: this is the main task, which is to be im
     loss = history.history['loss']
 
     print(acc, loss)
+    """
 
     for i in range(total):
         if not message or random.random() < 0.25:
