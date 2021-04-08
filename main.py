@@ -1,27 +1,22 @@
 """Main module of the API
 """
-import os
-from os import listdir
-from os.path import isfile, join
 import io
 import random
 import time
 import uuid
 from datetime import datetime
-
 from requests import post
-from celery import Celery
-from api.config import celeryconfig
+
 from datauri import DataURI
 from datauri.exceptions import (
     InvalidDataURI,
     InvalidCharset,
     InvalidMimeType
     )
+
 import PIL.Image as Image
 
 from flask import (
-    Flask,
     make_response,
     request,
     session,
@@ -30,51 +25,23 @@ from flask import (
     current_app
     )
 from flask_socketio import (
-    SocketIO,
     emit,
     disconnect,
     join_room,
     leave_room
 )
-from flask_cors import CORS
 
 import tensorflow as tf
+
+from api import (
+    app,
+    socketio,
+    celery,
+    LOCAL_STORAGE,
+    STORAGE_TRACKER,
+    RPS_OPTIONS
+    )
 from api.core import models
-
-LOCAL_STORAGE = './data'
-
-STORAGE_TRACKER = dict()
-
-RPS_OPTIONS = {
-    '0': 'rock',
-    '1': 'paper',
-    '2': 'scissor'
-}
-
-for label in RPS_OPTIONS.values():
-    onlyfiles = [
-        f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
-        if isfile(join(f"{LOCAL_STORAGE}/{label}/", f))     # TODO: ignore non-image files
-        ]
-    STORAGE_TRACKER[label] = onlyfiles
-
-# Create folders to store images if not existing
-try:
-    for v in RPS_OPTIONS.values():
-        os.makedirs(LOCAL_STORAGE + '/' + v, exist_ok=True)
-except FileExistsError:
-    pass
-
-app = Flask(__name__)
-app.clients = {}
-CORS(app)
-app.config['SECRET_KEY'] = 'top-secret!'
-socketio = SocketIO(app, cors_allowed_origins="*")
-
-# Initialize Celery
-celery = Celery(app.name)
-celery.config_from_object(celeryconfig)
-celery.conf.update(app.config)
 
 
 @celery.task()
