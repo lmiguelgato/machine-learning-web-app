@@ -1,7 +1,10 @@
 """Machine learning models and routines
 """
 import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
+
+from ..config import tfconfig
 
 
 preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
@@ -11,11 +14,15 @@ data_augmentation = tf.keras.Sequential([
   tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
 ])
 
-mobile_net = tf.keras.applications.MobileNetV2(include_top=False, weights='imagenet')
-# print(mobile_net.summary())
+mobile_net = tf.keras.applications.MobileNetV2(
+    input_shape=tfconfig.IMG_SIZE + (3,),
+    include_top=False,
+    weights='imagenet'
+    )
+mobile_net.trainable = False
 
 # TODO: define a class instead
-inputs = tf.keras.Input(shape=(160, 160, 3))
+inputs = tf.keras.Input(shape=tfconfig.IMG_SIZE + (3,))
 x = data_augmentation(inputs)
 x = preprocess_input(x)
 x = mobile_net(x, training=False)
@@ -25,11 +32,69 @@ outputs = Dense(3, activation='softmax')(x)
 
 three_classes_classifier = tf.keras.Model(inputs, outputs)
 
-""" image = Image.open(io.BytesIO(uri.data))
-x = tf.keras.preprocessing.image.img_to_array(image)
-print('--------------------', x.shape)
-x = tf.image.resize(x, [160, 160])
-print('--------------------', x.shape)
-x = three_classes_classifier.predict(x[tf.newaxis, ...])
-print('--------------------', x)
-# print(three_classes_classifier.summary()) """
+# Compile the model
+three_classes_classifier.compile(
+    optimizer=tf.keras.optimizers.Adam(lr=tfconfig.LEARNING_RATE),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
+    )
+
+
+class CustomCallback(keras.callbacks.Callback):
+    """Define a simple custom callback that logs steps in training and prediction
+    """
+    def on_train_begin(self, logs=None):
+        keys = list(logs.keys())
+        print("Starting training; got log keys: {}".format(keys))
+
+    def on_train_end(self, logs=None):
+        keys = list(logs.keys())
+        print("Stop training; got log keys: {}".format(keys))
+
+    def on_epoch_begin(self, epoch, logs=None):
+        keys = list(logs.keys())
+        print("Start epoch {} of training; got log keys: {}".format(epoch, keys))
+
+    def on_epoch_end(self, epoch, logs=None):
+        keys = list(logs.keys())
+        print("End epoch {} of training; got log keys: {}".format(epoch, keys))
+
+    def on_test_begin(self, logs=None):
+        keys = list(logs.keys())
+        print("Start testing; got log keys: {}".format(keys))
+
+    def on_test_end(self, logs=None):
+        keys = list(logs.keys())
+        print("Stop testing; got log keys: {}".format(keys))
+
+    def on_predict_begin(self, logs=None):
+        keys = list(logs.keys())
+        print("Start predicting; got log keys: {}".format(keys))
+
+    def on_predict_end(self, logs=None):
+        keys = list(logs.keys())
+        print("Stop predicting; got log keys: {}".format(keys))
+
+    def on_train_batch_begin(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Training: start of batch {}; got log keys: {}".format(batch, keys))
+
+    def on_train_batch_end(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Training: end of batch {}; got log keys: {}".format(batch, keys))
+
+    def on_test_batch_begin(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Evaluating: start of batch {}; got log keys: {}".format(batch, keys))
+
+    def on_test_batch_end(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Evaluating: end of batch {}; got log keys: {}".format(batch, keys))
+
+    def on_predict_batch_begin(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Predicting: start of batch {}; got log keys: {}".format(batch, keys))
+
+    def on_predict_batch_end(self, batch, logs=None):
+        keys = list(logs.keys())
+        print("...Predicting: end of batch {}; got log keys: {}".format(batch, keys))

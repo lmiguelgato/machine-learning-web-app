@@ -3,13 +3,10 @@ import Button from 'react-bootstrap/Button'
 import axios from 'axios'
 import socketIOClient from 'socket.io-client'
 
-import CheckBox from '../CheckBox'
-import RadioButton from '../RadioButton'
+// Constants
+import { ENDPOINT, TRAIN_ROUTE } from '../../constant'
 
 const WebSocket = (props) => {
-  const ENDPOINT = props.endpoint
-  const optionDescription = props.options
-
   const [isLoading, setIsLoading] = useState(false)
   const [userId, setUserId] = useState('')
   const [status, setStatus] = useState('')
@@ -20,7 +17,7 @@ const WebSocket = (props) => {
     setIsLoading(true)
 
     const apiResponse = await axios.post(
-      ENDPOINT + '/job',
+      TRAIN_ROUTE,
       { user_id: userId }
     )
 
@@ -47,19 +44,6 @@ const WebSocket = (props) => {
 
   return (
     <div>
-      {props.type === 'checkbox'
-        ? <CheckBox
-          optionDescription={optionDescription}
-          isLoading={isLoading}
-          option={props.select}
-          setOption={props.setSelect}/>
-        : <RadioButton
-            optionDescription={optionDescription}
-            isLoading={isLoading}
-            option={props.select}
-            setOption={props.setSelect}/>
-      }
-      <br />
       <Button
           variant="success"
           size="lg"
