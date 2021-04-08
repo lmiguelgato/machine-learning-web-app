@@ -67,7 +67,7 @@ celery.conf.update(app.config)
 
 
 @celery.task()
-def training_task(room, url):
+def training_task(room, url):   # TODO: this is the main task, which is to be implemented
     """Background task that runs a long function with progress reports."""
     verb = ['Starting', 'Running', 'Updating', 'Loading', 'Checking']
     adjective = ['latest', 'optimized', 'lightweight', 'efficient', 'core']
@@ -122,30 +122,31 @@ def longtask():
 
 
 @celery.task()
-def predict_task(room, url, _image):
+def predict_task(room, url, data_uri):    # TODO: implement this
     """Get probabilities of each class, given an input image
 
     Args:
         room (str): room of the current user
         url (str): URL where the status of this task will be posted
-        image (PIL.JpegImagePlugin.JpegImageFile): image to be classified
+        data_uri (str): image to be classified in data URI format
 
     Returns:
         dict: serializable object passed as response
     """
 
-    uri = DataURI(_image)
+    uri = DataURI(data_uri)
     image = Image.open(io.BytesIO(uri.data))
 
-    # Get embedding from DL model
-    x = tf.keras.preprocessing.image.img_to_array(image)
-    x = tf.image.resize(x, [160, 160])
-    x = models.three_classes_classifier.predict(x[tf.newaxis, ...])
+    # Get probabilities for each class
+    tensor_image = tf.keras.preprocessing.image.img_to_array(image)
+    tensor_image_resized = tf.image.resize(tensor_image, [160, 160])
+    class_probabilities = models.three_classes_classifier.predict(tensor_image_resized[tf.newaxis, ...])
 
     meta = {'current': 100,
             'total': 100,
             'status': 'Done.',
             'room': room,
+            'class_probabilities': class_probabilities,
             'time': datetime.now().strftime('%H:%M:%S'),
             }
     post(url, json=meta)
@@ -153,7 +154,7 @@ def predict_task(room, url, _image):
     return meta
 
 
-def check_image_format(data_uri, screenshot_format, selected):
+def check_image_format(uri, screenshot_format, selected):
     """Extract data from URI and check format and type of data received
 
     Args:
@@ -164,12 +165,6 @@ def check_image_format(data_uri, screenshot_format, selected):
     Returns:
         (bool, list of str): is data valid?, cause(s)
     """
-
-    # Extract data from URI
-    try:
-        uri = DataURI(data_uri)
-    except (InvalidDataURI, InvalidCharset, InvalidMimeType) as e:
-        app.logger.error(e)
 
     # Check format and type of data received
     tx_data_type, tx_data_format = screenshot_format.split('/')
@@ -194,34 +189,61 @@ def check_image_format(data_uri, screenshot_format, selected):
         is_valid = False
         causes.append(f"Unexpected '{selected}' option.")
 
-    if is_valid:
-        app.logger.debug('Valid image received, saving ...')
-        image = Image.open(io.BytesIO(uri.data))
-        save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}"
-        image.save(f"{save_path}/capture_{datetime.now().strftime('%H-%M-%S')}.{rx_data_format}")
-        causes.append(f"'{uri.mimetype}' received. Ok.")
-
     return (is_valid, causes)
 
+
+def save_capture(uri, selected):
+    """Saves an image in data URI format, into the folder corresponding to the selected option
+
+    Args:
+        uri (data URI): image in data URI format
+        selected (str): option selected
+
+    Returns:
+        bool, str: able to save image?, path to image
+    """
+
+    save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}/"
+    save_path += f"capture_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}"
+    save_path += f".{uri.mimetype.split('/')[1]}"
+
+    try:
+        image = Image.open(io.BytesIO(uri.data))
+        image.save(save_path)
+    except Exception as e:
+        app.logger.error(e)
+        return False, save_path
+
+    return True, save_path
 
 @app.route('/capture', methods=['POST'])
 def capture():
     """This route is triggered every time a picture was taken in the browser
     """
-    # userid = request.json['user_id']
-    # room = f'uid-{userid}'
-    room = 'room'
     data_uri = request.json['data_uri']
     screenshot_format = request.json['screenshot_format']
     selected = request.json['selected']
 
-    is_valid, causes = check_image_format(data_uri, screenshot_format, selected)
+    # Extract data from URI
+    try:
+        uri = DataURI(data_uri)
+    except (InvalidDataURI, InvalidCharset, InvalidMimeType) as e:
+        app.logger.error(e)
+
+    is_valid, causes = check_image_format(uri, screenshot_format, selected)
 
     if is_valid:
-        predict_task.delay(room, url_for('status', _external=True, _method='POST'), data_uri)
+        causes.append(f"Ok, '{uri.mimetype}' received.")
+        app.logger.debug('Valid image received, saving ...')
+        did_save, img_path = save_capture(uri, selected)
+        if did_save:
+            app.logger.debug("Successfully saved '%s' in '%s'", RPS_OPTIONS[selected], img_path)
+        else:
+            app.logger.debug("Unable to save '%s' in '%s'", RPS_OPTIONS[selected], img_path)
 
     return make_response(
         jsonify({
+            'valid_capture': is_valid,
             'ack': causes
             })
         )
