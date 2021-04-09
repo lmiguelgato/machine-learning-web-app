@@ -16,9 +16,10 @@ For example, run: `virtualenv -p python3.8 venv && source venv/bin/activate`
 
 :one: -Install the requirements: \
 `pip install -r requirements.txt` \
-Then, install [TensorFlow](https://www.tensorflow.org/) (not included in `requirements.txt`, because there are no matching releases for Apple Silicon chips yet):
-- Not MacOS users: `pip install tensorflow==2.4.0-rc0`
-- MacOS users (specially those with Apple Silicon chips): follow [this instructions](https://github.com/apple/tensorflow_macos#readme), using the existing virtual environment from :zero: \
+Then, install [TensorFlow](https://www.tensorflow.org/) by running** `pip install tensorflow==2.4.0-rc0`
+
+** Not included in `requirements.txt`, because there are no stable releases for Apple Silicon chips yet. MacOS users running on Apple Silicon CPUs: follow [this instructions](https://github.com/apple/tensorflow_macos#readme), using the existing virtual environment from :zero:
+
 To make sure TensorFlow is properly installed, you may try the benchmark in `api/benchmark/`. For example, this should work fine: `python api/benchmark/bench_tf.py`, even for Apple Silicon chips.
 
 :two: -Start a local Redis server.\
