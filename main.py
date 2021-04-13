@@ -63,14 +63,8 @@ celery.conf.update(app.config)
 
 
 @celery.task()
-def training_task(room, url):   # TODO: this is the main task, which is to be implemented
-    """Background task that runs a long function with progress reports."""
-    verb = ['Starting', 'Running', 'Updating', 'Loading', 'Checking']
-    adjective = ['latest', 'optimized', 'lightweight', 'efficient', 'core']
-    noun = ['neural network', 'backpropagation', 'gradient descent', 'regularization', 'weights']
-    message = ''
-    total = random.randint(10, 50)
-
+def create_dataset_task(room, url):
+    """Background task that creates a dataset from a directory with images."""
     train_dataset = image_dataset_from_directory(
         LOCAL_STORAGE,
         shuffle=True,
@@ -79,8 +73,32 @@ def training_task(room, url):   # TODO: this is the main task, which is to be im
         )
 
     train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
+    # TODO improve pipeline with cache and others like in api.benchmark.bench_tf
 
-    """
+    # tf.data.experimental.save(train_dataset, LOCAL_STORAGE + '/train_dataset')
+    # TODO call this ^^^ from another route
+
+    meta = {'current': 100,
+            'total': 100,
+            'status': 'Done.',
+            'room': room,
+            'time': datetime.now().strftime('%H:%M:%S'),
+            }
+    post(url, json=meta)
+    return meta
+
+
+@celery.task()
+def training_task(room, url):   # TODO: this is the main task, which is to be implemented
+    """Background task that runs a long function with progress reports."""
+    verb = ['Starting', 'Running', 'Updating', 'Loading', 'Checking']
+    adjective = ['latest', 'optimized', 'lightweight', 'efficient', 'core']
+    noun = ['neural network', 'backpropagation', 'gradient descent', 'regularization', 'weights']
+    message = ''
+    total = random.randint(10, 50)
+
+    # TODO load dataset from storage and fit in next route
+    """"
     history = models.three_classes_classifier.fit(
         train_dataset,
         epochs=tfconfig.EPOCHS,
@@ -142,7 +160,7 @@ def longtask():
     """
     userid = request.json['user_id']
     room = f'uid-{userid}'
-    training_task.delay(room, url_for('status', _external=True, _method='POST'))
+    create_dataset_task.delay(room, url_for('status', _external=True, _method='POST'))
     return make_response(
         jsonify(
             {'status': f"Started at {datetime.now().strftime('%H:%M:%S')}"}
