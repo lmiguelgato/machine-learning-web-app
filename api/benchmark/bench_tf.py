@@ -90,4 +90,5 @@ model.fit(
 )
 
 # If left the model, dataset, seed, and hyperparameters unchanged, the classification accuracy at
-# the end of the 12th epoch should be 85.27% and 92.83% on the training and test sets, respectively.
+# the end of the 12th epoch should be close to 85.27 % and 92.83 % on the training and test sets,
+# respectively.
