@@ -7,17 +7,27 @@ from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from ..config import tfconfig
 
 
-preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
+""" --- MobileNet model ---
+    Reference:
+    MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
+    https://arxiv.org/abs/1704.04861
+"""
+
+# Each Keras Application expects a specific kind of input preprocessing:
+preprocess_input = tf.keras.applications.mobilenet.preprocess_input
+
+
 rescale = tf.keras.layers.experimental.preprocessing.Rescaling(1./127.5, offset=-1)
 data_augmentation = tf.keras.Sequential([
   tf.keras.layers.experimental.preprocessing.RandomFlip('horizontal'),
   tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
 ])
 
-mobile_net = tf.keras.applications.MobileNetV2(
+mobile_net = tf.keras.applications.MobileNet(
     input_shape=tfconfig.IMG_SIZE + (3,),
-    include_top=False,
-    weights='imagenet'
+    include_top=False,  # whether to include the fully-connected layer at the top of the network
+    alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
+    depth_multiplier=1  # a.k.a. resolution multiplier, it controls the depth of the network
     )
 mobile_net.trainable = False
 
