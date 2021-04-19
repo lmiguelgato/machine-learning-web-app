@@ -5,7 +5,7 @@ DATASET_UP_TO_DATE = False
 
 LOCAL_STORAGE = './data'
 
-RPS_DATASET_PATH = 'rps_dataset'
+MODEL_STORAGE = './models'
 
 IMG_FORMATS = {'jpeg'}
 

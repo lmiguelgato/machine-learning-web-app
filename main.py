@@ -43,9 +43,9 @@ from api.core import models
 from api.config import celeryconfig, tfconfig
 from api.constant import (
     LOCAL_STORAGE,
-    RPS_DATASET_PATH,
     RPS_OPTIONS,
-    IMG_FORMATS
+    IMG_FORMATS,
+    MODEL_STORAGE
 )
 
 from celery import Celery
@@ -65,7 +65,7 @@ celery.config_from_object(celeryconfig)
 celery.conf.update(app.config)
 
 
-def create_dataset(from_path, to_path):
+def create_dataset(from_path):
     """Create a dataset from a directory with images."""
     train_dataset = image_dataset_from_directory(
         from_path,
@@ -88,7 +88,6 @@ def create_dataset(from_path, to_path):
     train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
     validation_dataset = validation_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
-    # tf.data.experimental.save(train_dataset, to_path)
     return train_dataset, validation_dataset
 
 
@@ -98,55 +97,47 @@ def training_task(dataset_up_to_date, room, url):
 
     celery_logger = get_task_logger(__name__)
 
-    if not dataset_up_to_date:
-        celery_logger.info("Creating dataset ...")
+    celery_logger.info("Creating dataset ...")
 
-        meta = {
-                'current': 0,
-                'total': tfconfig.EPOCHS,
-                'status': 'Creating dataset ...',
-                'room': room,
-                'time': datetime.now().strftime('%H:%M:%S')
-                }
-        post(url, json=meta)
+    meta = {
+            'current': 0,
+            'total': tfconfig.EPOCHS,
+            'status': 'Creating dataset ...',
+            'room': room,
+            'time': datetime.now().strftime('%H:%M:%S')
+            }
+    post(url, json=meta)
 
-        train_dataset, validation_dataset = create_dataset(LOCAL_STORAGE, RPS_DATASET_PATH)
-        celery_logger.info("Done.")
-    else:
-        celery_logger.info("Loading existing dataset ...")
-
-        meta = {
-                'current': 0,
-                'total': tfconfig.EPOCHS,
-                'status': 'Loading existing dataset ...',
-                'room': room,
-                'time': datetime.now().strftime('%H:%M:%S')
-                }
-        post(url, json=meta)
-
-        train_dataset = tf.data.experimental.load(
-            RPS_DATASET_PATH,
-            (
-                tf.TensorSpec(shape=(None, 160, 160, 3), dtype=tf.float32, name=None),
-                tf.TensorSpec(shape=(None,), dtype=tf.int32, name=None)
-            )
-            )
-        celery_logger.info("Done.")
+    train_dataset, validation_dataset = create_dataset(LOCAL_STORAGE)
+    celery_logger.info("Done.")
 
     celery_logger.info("Start training ...")
-    history = models.three_classes_classifier.fit(
-        train_dataset,
-        validation_data=validation_dataset,
-        epochs=tfconfig.EPOCHS,
-        callbacks=[models.CustomCallback(url, room, celery_logger)]
-        )
+    try:
+        history = models.three_classes_classifier.fit(
+            train_dataset,
+            validation_data=validation_dataset,
+            epochs=tfconfig.EPOCHS,
+            callbacks=[models.CustomCallback(url, room, celery_logger)]
+            )
+    except Exception as e:
+        celery_logger.error(e)
+    else:
+        celery_logger.info("Done ...")
+    
 
-    # TODO use acc and loss to make a plot
-    acc = history.history['sparse_categorical_accuracy']
-    loss = history.history['loss']
+        celery_logger.info("Saving the model ...")
+        try:
+            models.three_classes_classifier.save(f'{MODEL_STORAGE}/rps_model.h5')
+        except Exception as e:
+            celery_logger.error(e)
+        else:
+            celery_logger.info("Done ...")
 
-    print(acc, loss)
-    return acc
+        # TODO use acc and loss to make a plot
+        acc = history.history['sparse_categorical_accuracy']
+        loss = history.history['loss']
+
+        print(acc, loss)
 
 
 @app.route('/clients', methods=['GET'])

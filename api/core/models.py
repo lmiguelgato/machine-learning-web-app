@@ -4,7 +4,7 @@ from datetime import datetime
 
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 
 from requests import post
 
@@ -41,7 +41,7 @@ x = data_augmentation(inputs)
 x = preprocess_input(x)
 x = mobile_net(x, training=False)
 x = GlobalAveragePooling2D()(x)
-x = Dropout(0.2)(x)
+x = Dense(100, activation='relu')(x)
 outputs = Dense(3, activation='softmax')(x)
 
 three_classes_classifier = tf.keras.Model(inputs, outputs)
@@ -49,7 +49,7 @@ three_classes_classifier = tf.keras.Model(inputs, outputs)
 # Compile the model
 three_classes_classifier.compile(
     optimizer=tf.keras.optimizers.Adam(lr=tfconfig.LEARNING_RATE),
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(),
     metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
     )
 
