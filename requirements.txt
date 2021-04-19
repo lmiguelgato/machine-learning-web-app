@@ -27,7 +27,7 @@ py==1.10.0
 pyparsing==2.4.7
 pytest==6.2.3
 python-datauri==1.0.0
-python-engineio==4.0.1
+python-engineio==4.1.0
 python-socketio==5.1.0
 pytz==2021.1
 redis==3.5.3
