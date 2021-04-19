@@ -7,6 +7,8 @@ LOCAL_STORAGE = './data'
 
 RPS_DATASET_PATH = 'rps_dataset'
 
+IMG_FORMATS = {'jpeg'}
+
 RPS_OPTIONS = {
     '0': 'rock',
     '1': 'paper',

@@ -1,7 +1,6 @@
 """Main module of the API
 """
 import io
-import time
 import uuid
 from datetime import datetime
 from requests import post
@@ -45,7 +44,8 @@ from api.config import celeryconfig, tfconfig
 from api.constant import (
     LOCAL_STORAGE,
     RPS_DATASET_PATH,
-    RPS_OPTIONS
+    RPS_OPTIONS,
+    IMG_FORMATS
 )
 
 from celery import Celery
@@ -69,16 +69,27 @@ def create_dataset(from_path, to_path):
     """Create a dataset from a directory with images."""
     train_dataset = image_dataset_from_directory(
         from_path,
-        shuffle=True,
+        validation_split=0.2,
+        subset="training",
+        seed=tfconfig.RANDOM_SEED,
         batch_size=tfconfig.BATCH_SIZE,
         image_size=tfconfig.IMG_SIZE
         )
 
-    train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
-    # TODO improve pipeline with cache and others like in api.benchmark.bench_tf
+    validation_dataset = image_dataset_from_directory(
+        from_path,
+        validation_split=0.2,
+        subset="validation",
+        seed=tfconfig.RANDOM_SEED,
+        batch_size=tfconfig.BATCH_SIZE,
+        image_size=tfconfig.IMG_SIZE
+        )
 
-    tf.data.experimental.save(train_dataset, to_path)
-    return train_dataset
+    train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+    validation_dataset = validation_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+
+    # tf.data.experimental.save(train_dataset, to_path)
+    return train_dataset, validation_dataset
 
 
 @celery.task()
@@ -99,7 +110,7 @@ def training_task(dataset_up_to_date, room, url):
                 }
         post(url, json=meta)
 
-        train_dataset = create_dataset(LOCAL_STORAGE, RPS_DATASET_PATH)
+        train_dataset, validation_dataset = create_dataset(LOCAL_STORAGE, RPS_DATASET_PATH)
         celery_logger.info("Done.")
     else:
         celery_logger.info("Loading existing dataset ...")
@@ -122,24 +133,10 @@ def training_task(dataset_up_to_date, room, url):
             )
         celery_logger.info("Done.")
 
-    time.sleep(1)
-
     celery_logger.info("Start training ...")
-
-    loss_0, accuracy_0 = models.three_classes_classifier.evaluate(train_dataset)
-    # TODO use validation dataset to evaluate
-
-    meta = {
-            'current': 0,
-            'total': tfconfig.EPOCHS,
-            'status': f"Initial loss: {loss_0:.2}, initial accuracy: {accuracy_0:.2}",
-            'room': room,
-            'time': datetime.now().strftime('%H:%M:%S')
-            }
-    post(url, json=meta)
-
     history = models.three_classes_classifier.fit(
         train_dataset,
+        validation_data=validation_dataset,
         epochs=tfconfig.EPOCHS,
         callbacks=[models.CustomCallback(url, room, celery_logger)]
         )
@@ -169,7 +166,7 @@ def storage():
     for index, label in RPS_OPTIONS.items():
         onlyfiles = [
             f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
-            if isfile(join(f"{LOCAL_STORAGE}/{label}/", f))     # TODO: ignore non-image files
+            if isfile(join(f"{LOCAL_STORAGE}/{label}/", f)) and f[-4:] in IMG_FORMATS
             ]
         STORAGE_TRACKER[index] = onlyfiles
 
