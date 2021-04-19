@@ -3,7 +3,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 // Pages
 import Home from './pages/home'
-import WebCam from './pages/webcam'
+/* import WebCam from './pages/webcam' */
 import RockPaperScissors from './pages/rock-paper-scissors'
 
 // Components
@@ -29,10 +29,10 @@ function App () {
             <Home/>
           </Route>
 
-          <Route path="/webcam">
+          {/* <Route path="/webcam">
             <WebCam endpoint={CAPTURE_ROUTE} />
             <Websocket endpoint={ENDPOINT}/>
-          </Route>
+          </Route> */}
 
           <Route path="/rock-paper-scissors">
             <RockPaperScissors
