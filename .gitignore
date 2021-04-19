@@ -151,5 +151,5 @@ static/package-lock.json
 # Local tensorflow installation for MacOS
 tensorflow_macos/
 
-# Compiled datasets and snapshots
-rps_dataset/
+# Trained models
+models/
