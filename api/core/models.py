@@ -58,7 +58,7 @@ class CustomCallback(keras.callbacks.Callback):
     """Define a simple custom callback that logs steps in training and prediction
     """
     def __init__(self, url, room, logger=None):
-        super(CustomCallback, self).__init__()
+        super().__init__()
         self.logger = logger
         self.url = url
         self.room = room
