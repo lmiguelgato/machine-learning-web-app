@@ -6,6 +6,9 @@ import uuid
 from datetime import datetime
 from requests import post
 
+from os import listdir
+from os.path import isfile, join
+
 from datauri import DataURI
 from datauri.exceptions import (
     InvalidDataURI,
@@ -37,7 +40,6 @@ from flask_cors import CORS
 
 from flask_socketio import SocketIO
 
-from api import STORAGE_TRACKER
 from api.core import models
 from api.config import celeryconfig, tfconfig
 from api.constant import (
@@ -87,7 +89,7 @@ def training_task(dataset_up_to_date, room, url):
 
     if not dataset_up_to_date:
         celery_logger.info("Creating dataset ...")
-        
+
         meta = {
                 'current': 0,
                 'total': tfconfig.EPOCHS,
@@ -161,6 +163,16 @@ def clients():
 def storage():
     """Get information regarding the local storage
     """
+
+    # Find all images in local storage, and group them by label
+    STORAGE_TRACKER = dict()
+    for index, label in RPS_OPTIONS.items():
+        onlyfiles = [
+            f for f in listdir(f"{LOCAL_STORAGE}/{label}/")
+            if isfile(join(f"{LOCAL_STORAGE}/{label}/", f))     # TODO: ignore non-image files
+            ]
+        STORAGE_TRACKER[index] = onlyfiles
+
     return make_response(jsonify(
         {
             'storage': STORAGE_TRACKER
@@ -308,7 +320,6 @@ def capture():
         did_save, img_path = save_capture(uri, selected)
         if did_save:
             DATASET_UP_TO_DATE = False
-            STORAGE_TRACKER[selected] += [img_path]
             app.logger.debug("Successfully saved '%s' in '%s'", RPS_OPTIONS[selected], img_path)
         else:
             app.logger.debug("Unable to save '%s' in '%s'", RPS_OPTIONS[selected], img_path)
