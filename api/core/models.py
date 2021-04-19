@@ -4,6 +4,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 
+import time
+
+from datetime import datetime
+from requests import post
+
 from ..config import tfconfig
 
 
@@ -53,20 +58,69 @@ three_classes_classifier.compile(
 class CustomCallback(keras.callbacks.Callback):
     """Define a simple custom callback that logs steps in training and prediction
     """
+    def __init__(self, url, room, logger=None):
+        self.logger = logger
+        self.url = url
+        self.room = room
+
     def on_train_begin(self, logs=None):
         keys = list(logs.keys())
+
+        time.sleep(1)
+
+        if self.logger:
+            self.logger.info("Starting training; got log keys: {}".format(keys))
+
+        meta = {
+                'current': 0,
+                'total': tfconfig.EPOCHS,
+                'status': 'Starting training ...',
+                'room': self.room,
+                'time': datetime.now().strftime('%H:%M:%S')
+                }
+        post(self.url, json=meta)
+
+        time.sleep(1)
+
         print("Starting training; got log keys: {}".format(keys))
 
     def on_train_end(self, logs=None):
         keys = list(logs.keys())
+
+        if self.logger:
+            self.logger.info("Stop training; got log keys: {}".format(keys))
+
         print("Stop training; got log keys: {}".format(keys))
 
     def on_epoch_begin(self, epoch, logs=None):
         keys = list(logs.keys())
+
+        if self.logger:
+            self.logger.info("Start epoch {} of training; got log keys: {}".format(epoch, keys))
+
         print("Start epoch {} of training; got log keys: {}".format(epoch, keys))
 
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
+
+        if self.logger:
+            self.logger.info("Start epoch {} of training; got log keys: {}".format(epoch, keys))
+
+        msg = f"Epoch {epoch+1}/{tfconfig.EPOCHS} - "
+        msg += f"Loss: {logs['loss']:.2}"
+        msg += f", Accuracy: {logs['sparse_categorical_accuracy']:.2}"
+
+        meta = {
+                'current': epoch+1,
+                'total': tfconfig.EPOCHS,
+                'status': msg,
+                'room': self.room,
+                'time': datetime.now().strftime('%H:%M:%S')
+                }
+        post(self.url, json=meta)
+
+        time.sleep(1)
+
         print("End epoch {} of training; got log keys: {}".format(epoch, keys))
 
     def on_test_begin(self, logs=None):

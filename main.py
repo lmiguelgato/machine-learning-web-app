@@ -1,7 +1,6 @@
 """Main module of the API
 """
 import io
-import random
 import time
 import uuid
 from datetime import datetime
@@ -42,13 +41,13 @@ from api import STORAGE_TRACKER
 from api.core import models
 from api.config import celeryconfig, tfconfig
 from api.constant import (
-    DATASET_UP_TO_DATE,
     LOCAL_STORAGE,
     RPS_DATASET_PATH,
     RPS_OPTIONS
 )
 
 from celery import Celery
+from celery.utils.log import get_task_logger
 
 
 app = Flask(__name__)
@@ -83,18 +82,35 @@ def create_dataset(from_path, to_path):
 @celery.task()
 def training_task(dataset_up_to_date, room, url):
     """Background task that runs a long function with progress reports."""
-    verb = ['Starting', 'Running', 'Updating', 'Loading', 'Checking']
-    adjective = ['latest', 'optimized', 'lightweight', 'efficient', 'core']
-    noun = ['neural network', 'backpropagation', 'gradient descent', 'regularization', 'weights']
-    message = ''
-    total = random.randint(10, 50)
+
+    celery_logger = get_task_logger(__name__)
 
     if not dataset_up_to_date:
-        print('CREATING DATASET ...')
+        celery_logger.info("Creating dataset ...")
+        
+        meta = {
+                'current': 0,
+                'total': tfconfig.EPOCHS,
+                'status': 'Creating dataset ...',
+                'room': room,
+                'time': datetime.now().strftime('%H:%M:%S')
+                }
+        post(url, json=meta)
+
         train_dataset = create_dataset(LOCAL_STORAGE, RPS_DATASET_PATH)
-        print('DONE')
+        celery_logger.info("Done.")
     else:
-        print('LOADING DATASET ...')
+        celery_logger.info("Loading existing dataset ...")
+
+        meta = {
+                'current': 0,
+                'total': tfconfig.EPOCHS,
+                'status': 'Loading existing dataset ...',
+                'room': room,
+                'time': datetime.now().strftime('%H:%M:%S')
+                }
+        post(url, json=meta)
+
         train_dataset = tf.data.experimental.load(
             RPS_DATASET_PATH,
             (
@@ -102,44 +118,36 @@ def training_task(dataset_up_to_date, room, url):
                 tf.TensorSpec(shape=(None,), dtype=tf.int32, name=None)
             )
             )
-        print('DONE')
+        celery_logger.info("Done.")
 
-    history = models.three_classes_classifier.fit(
-        train_dataset,
-        epochs=tfconfig.EPOCHS,
-        callbacks=[models.CustomCallback()]
-        )
+    time.sleep(1)
 
-    acc = history.history['sparse_categorical_accuracy']
-    loss = history.history['loss']
+    celery_logger.info("Start training ...")
 
-    print(acc, loss)
+    loss_0, accuracy_0 = models.three_classes_classifier.evaluate(train_dataset)
+    # TODO use validation dataset to evaluate
 
-    """
-    for i in range(total):
-        if not message or random.random() < 0.25:
-            message = "{0} {1} {2} ...".format(random.choice(verb),
-                                               random.choice(adjective),
-                                               random.choice(noun))
-
-        meta = {'current': i,
-                'total': total,
-                'status': message,
-                'room': room
-                }
-
-        post(url, json=meta)
-        time.sleep(0.5)
-    """
-
-    meta = {'current': 100,
-            'total': 100,
-            'status': 'Done.',
+    meta = {
+            'current': 0,
+            'total': tfconfig.EPOCHS,
+            'status': f"Initial loss: {loss_0:.2}, initial accuracy: {accuracy_0:.2}",
             'room': room,
             'time': datetime.now().strftime('%H:%M:%S')
             }
     post(url, json=meta)
-    return meta
+
+    history = models.three_classes_classifier.fit(
+        train_dataset,
+        epochs=tfconfig.EPOCHS,
+        callbacks=[models.CustomCallback(url, room, celery_logger)]
+        )
+
+    # TODO use acc and loss to make a plot
+    acc = history.history['sparse_categorical_accuracy']
+    loss = history.history['loss']
+
+    print(acc, loss)
+    return acc
 
 
 @app.route('/clients', methods=['GET'])
@@ -167,14 +175,15 @@ def longtask():
     userid = request.json['user_id']
     DATASET_UP_TO_DATE = request.json['dataset_up_to_date']
     room = f'uid-{userid}'
-    
+
     training_task.delay(DATASET_UP_TO_DATE, room, url_for('status', _external=True, _method='POST'))
     DATASET_UP_TO_DATE = True  # TODO Avoid the use of side effects and global variables
 
     return make_response(
         jsonify(
-            {'status': f"Started at {datetime.now().strftime('%H:%M:%S')}",
-            'dataset_up_to_date': DATASET_UP_TO_DATE}
+            {
+                'status': f"Started at {datetime.now().strftime('%H:%M:%S')}",
+                'dataset_up_to_date': DATASET_UP_TO_DATE}
             )
         )
 

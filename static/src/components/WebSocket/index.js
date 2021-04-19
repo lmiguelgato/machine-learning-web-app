@@ -36,7 +36,7 @@ const WebSocket = (props) => {
       if (data.current === data.total) {
         setIsLoading(false)
         setProgress(0)
-        setStatus('')
+        setStatus(data.status)
         setTime(start => start + ', finished at ' + data.time)
       } else {
         setProgress(Math.floor(100 * data.current / data.total))
