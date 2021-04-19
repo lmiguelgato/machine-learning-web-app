@@ -1,10 +1,11 @@
 """Machine learning models and routines
 """
+from datetime import datetime
+
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 
-from datetime import datetime
 from requests import post
 
 from ..config import tfconfig
@@ -57,6 +58,7 @@ class CustomCallback(keras.callbacks.Callback):
     """Define a simple custom callback that logs steps in training and prediction
     """
     def __init__(self, url, room, logger=None):
+        super(CustomCallback, self).__init__()
         self.logger = logger
         self.url = url
         self.room = room
