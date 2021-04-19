@@ -8,10 +8,8 @@ import { ENDPOINT, TRAIN_ROUTE } from '../../constant'
 
 const WebSocket = (props) => {
   const [isTraining, setIsTraining] = useState(false)
-  const [isPredicting, setIsPredicting] = useState(false)
   const [userId, setUserId] = useState('')
   const [trainingStatus, setTrainingStatus] = useState('')
-  const [predictionStatus, setPredictionStatus] = useState('')
   const [progress, setProgress] = useState(0)
   const [time, setTime] = useState('')
 
@@ -27,27 +25,6 @@ const WebSocket = (props) => {
     )
 
     setTime(apiResponse.data.status)
-  }
-
-  const togglePredict = async () => {
-    if (isPredicting) {
-      setIsPredicting(false)
-      setPredictionStatus('')
-    } else {
-      setIsPredicting(true)
-      setPredictionStatus('Prediction ...')
-    }
-    /* while (isPredicting) {
-      setStatus(s => s + ' + Prediction ...')
-    } */
-    /*
-    const apiResponse = await axios.post(
-      TRAIN_ROUTE,
-      {
-        user_id: userId,
-        dataset_up_to_date: false // TODO get this from actual state
-      }
-    ) */
   }
 
   useEffect(() => {
@@ -78,17 +55,9 @@ const WebSocket = (props) => {
           className="Button">
           { isTraining ? '🧠 Training model (' + progress + ' %)' : '🚀 Click to train' }
       </Button>
-      <Button
-          variant="success"
-          size="lg"
-          onClick={togglePredict}
-          className="Button">
-          { isPredicting ? '🚫 Stop classification' : '🦾 Try classification' }
-      </Button>
       <br />
       { time }
       <h4 className="Message">{ trainingStatus }</h4>
-      <h4 className="Message">{ predictionStatus }</h4>
     </div>
   )
 }
