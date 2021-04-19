@@ -28,7 +28,7 @@ To make sure TensorFlow is properly installed, you may try the benchmark in `api
 For example, if you are on Linux or Mac, execute `api/run-redis.sh` to install and/or launch a private copy.
 
 :three: -Start a Celery worker using threaded tasks pooling (in another terminal instance) by running:\
-`celery -A main.celery worker --pool threads --loglevel=info -E`
+`celery -A main.celery worker --pool threads --loglevel info -E`
 
 :four: -Start the Flask application (in another terminal instance) by running:\
 `python main.py`
