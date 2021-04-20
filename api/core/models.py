@@ -61,6 +61,8 @@ class RockPaperScissor():
         return self.model.predict(tensor_image_resized[tf.newaxis, ...])
 
     def description(self) -> None:
+        """Print summary of the model.
+        """
         self.model.summary()
 
 
