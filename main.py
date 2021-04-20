@@ -15,6 +15,8 @@ from datauri.exceptions import (
     InvalidMimeType
     )
 
+import numpy as np
+
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 
@@ -85,14 +87,15 @@ def create_dataset(from_path):
         image_size=tfconfig.IMG_SIZE
         )
 
-    train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+    train_dataset = train_dataset.cache().shuffle(10, tfconfig.RANDOM_SEED)
+    train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
     validation_dataset = validation_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
     return train_dataset, validation_dataset
 
 
 @celery.task()
-def training_task(dataset_up_to_date, room, url):
+def train_task(room, url):
     """Background task that runs a long function with progress reports."""
 
     celery_logger = get_task_logger(__name__)
@@ -169,21 +172,19 @@ def storage():
 
 
 @app.route('/train', methods=['POST'])
-def longtask():
+def train():
     """This task will respond with the current time, and will trigget a celery task
     """
     userid = request.json['user_id']
-    DATASET_UP_TO_DATE = request.json['dataset_up_to_date']
     room = f'uid-{userid}'
 
-    training_task.delay(DATASET_UP_TO_DATE, room, url_for('status', _external=True, _method='POST'))
-    DATASET_UP_TO_DATE = True  # TODO Avoid the use of side effects and global variables
+    train_task.delay(room, url_for('status', _external=True, _method='POST'))
 
     return make_response(
         jsonify(
             {
-                'status': f"Started at {datetime.now().strftime('%H:%M:%S')}",
-                'dataset_up_to_date': DATASET_UP_TO_DATE}
+                'status': f"Started at {datetime.now().strftime('%H:%M:%S')}"
+            }
             )
         )
 
@@ -221,6 +222,28 @@ def predict_task(room, url, data_uri):    # TODO: implement this
     post(url, json=meta)
 
     return meta
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    """This task will respond with the infered label
+    """
+    data_uri = request.json['data_uri']
+
+    uri = DataURI(data_uri)
+    image = Image.open(io.BytesIO(uri.data))
+
+    # Get probabilities for each class
+    tensor_image = tf.keras.preprocessing.image.img_to_array(image)
+    tensor_image_resized = tf.image.resize(tensor_image, [160, 160])
+    class_probabilities = models.three_classes_classifier.predict(
+        tensor_image_resized[tf.newaxis, ...]
+        )
+
+    return make_response(jsonify({
+        'probability': str(round(np.max(class_probabilities), 2)),
+        'label': str(class_probabilities.argmax())
+    }))
 
 
 def check_image_format(uri, screenshot_format, selected):
@@ -307,7 +330,6 @@ def capture():
         app.logger.debug('Valid image received, saving ...')
         did_save, img_path = save_capture(uri, selected)
         if did_save:
-            DATASET_UP_TO_DATE = False
             app.logger.debug("Successfully saved '%s' in '%s'", RPS_OPTIONS[selected], img_path)
         else:
             app.logger.debug("Unable to save '%s' in '%s'", RPS_OPTIONS[selected], img_path)
@@ -315,8 +337,7 @@ def capture():
     return make_response(
         jsonify({
             'valid_capture': is_valid,
-            'ack': causes,
-            'dataset_up_to_date': DATASET_UP_TO_DATE
+            'ack': causes
             })
         )
 

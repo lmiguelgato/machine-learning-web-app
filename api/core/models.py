@@ -37,8 +37,7 @@ mobile_net.trainable = False
 
 # TODO: define a class instead
 inputs = tf.keras.Input(shape=tfconfig.IMG_SIZE + (3,))
-x = data_augmentation(inputs)
-x = preprocess_input(x)
+x = preprocess_input(inputs)
 x = mobile_net(x, training=False)
 x = GlobalAveragePooling2D()(x)
 x = Dense(100, activation='relu')(x)
