@@ -23,6 +23,8 @@ from ..config import tfconfig
 
 
 class RockPaperScissor():
+    """Class to create a model to classify Rock/Paper/Scissor images.
+    """
     def __init__(self, input_shape: tuple = (160, 160)) -> None:
         self.input_shape = input_shape
 
@@ -57,6 +59,9 @@ class RockPaperScissor():
         tensor_image = tf.keras.preprocessing.image.img_to_array(image)
         tensor_image_resized = tf.image.resize(tensor_image, self.input_shape)
         return self.model.predict(tensor_image_resized[tf.newaxis, ...])
+
+    def description(self) -> None:
+        self.model.summary()
 
 
 class CustomCallback(keras.callbacks.Callback):
