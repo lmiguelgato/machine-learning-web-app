@@ -18,7 +18,6 @@ from datauri.exceptions import (
 import numpy as np
 
 import tensorflow as tf
-from tensorflow.keras.preprocessing import image_dataset_from_directory
 
 import PIL.Image as Image
 
@@ -43,6 +42,11 @@ from flask_socketio import SocketIO
 
 from api.core import models
 from api.config import celeryconfig, tfconfig
+from api.core.datasets import create_dataset
+from api.core.images import (
+    check_image_format,
+    save_capture
+)
 from api.constant import (
     LOCAL_STORAGE,
     RPS_OPTIONS,
@@ -65,33 +69,6 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 celery = Celery(app.name)
 celery.config_from_object(celeryconfig)
 celery.conf.update(app.config)
-
-
-def create_dataset(from_path):
-    """Create a dataset from a directory with images."""
-    train_dataset = image_dataset_from_directory(
-        from_path,
-        validation_split=0.2,
-        subset="training",
-        seed=tfconfig.RANDOM_SEED,
-        batch_size=tfconfig.BATCH_SIZE,
-        image_size=tfconfig.IMG_SIZE
-        )
-
-    validation_dataset = image_dataset_from_directory(
-        from_path,
-        validation_split=0.2,
-        subset="validation",
-        seed=tfconfig.RANDOM_SEED,
-        batch_size=tfconfig.BATCH_SIZE,
-        image_size=tfconfig.IMG_SIZE
-        )
-
-    train_dataset = train_dataset.cache().shuffle(10, tfconfig.RANDOM_SEED)
-    train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
-    validation_dataset = validation_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
-
-    return train_dataset, validation_dataset
 
 
 @celery.task()
@@ -126,8 +103,6 @@ def train_task(room, url):
         celery_logger.error(e)
     else:
         celery_logger.info("Done ...")
-    
-
         celery_logger.info("Saving the model ...")
         try:
             models.three_classes_classifier.save(f'{MODEL_STORAGE}/rps_model.h5')
@@ -189,41 +164,6 @@ def train():
         )
 
 
-@celery.task()
-def predict_task(room, url, data_uri):    # TODO: implement this
-    """Get probabilities of each class, given an input image
-
-    Args:
-        room (str): room of the current user
-        url (str): URL where the status of this task will be posted
-        data_uri (str): image to be classified in data URI format
-
-    Returns:
-        dict: serializable object passed as response
-    """
-
-    uri = DataURI(data_uri)
-    image = Image.open(io.BytesIO(uri.data))
-
-    # Get probabilities for each class
-    tensor_image = tf.keras.preprocessing.image.img_to_array(image)
-    tensor_image_resized = tf.image.resize(tensor_image, [160, 160])
-    class_probabilities = models.three_classes_classifier.predict(
-        tensor_image_resized[tf.newaxis, ...]
-        )
-
-    meta = {'current': 100,
-            'total': 100,
-            'status': 'Done.',
-            'room': room,
-            'class_probabilities': class_probabilities,
-            'time': datetime.now().strftime('%H:%M:%S'),
-            }
-    post(url, json=meta)
-
-    return meta
-
-
 @app.route('/predict', methods=['POST'])
 def predict():
     """This task will respond with the infered label
@@ -244,69 +184,6 @@ def predict():
         'probability': str(round(np.max(class_probabilities), 2)),
         'label': str(class_probabilities.argmax())
     }))
-
-
-def check_image_format(uri, screenshot_format, selected):
-    """Extract data from URI and check format and type of data received
-
-    Args:
-        data_uri (str): image in data URI format
-        screenshot_format (str): data type and format
-        selected: index of the options selected on the UI
-
-    Returns:
-        (bool, list of str): is data valid?, cause(s)
-    """
-
-    # Check format and type of data received
-    tx_data_type, tx_data_format = screenshot_format.split('/')
-    rx_data_type, rx_data_format = uri.mimetype.split('/')
-
-    causes = []
-    is_valid = True
-
-    if tx_data_type != rx_data_type:
-        is_valid = False
-        causes.append(f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}.")
-
-    if tx_data_format != rx_data_format:
-        is_valid = False
-        causes.append(f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}.")
-
-    if rx_data_type != 'image':
-        is_valid = False
-        causes.append(f"Unexpected '{uri.mimetype}' received.")
-
-    if selected not in RPS_OPTIONS:
-        is_valid = False
-        causes.append(f"Unexpected '{selected}' option.")
-
-    return (is_valid, causes)
-
-
-def save_capture(uri, selected):
-    """Saves an image in data URI format, into the folder corresponding to the selected option
-
-    Args:
-        uri (data URI): image in data URI format
-        selected (str): option selected
-
-    Returns:
-        bool, str: able to save image?, path to image
-    """
-
-    save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}/"
-    save_path += f"capture_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S:%f')}"
-    save_path += f".{uri.mimetype.split('/')[1]}"
-
-    try:
-        image = Image.open(io.BytesIO(uri.data))
-        image.save(save_path)
-    except Exception as e:
-        app.logger.error(e)
-        return False, save_path
-
-    return True, save_path
 
 
 @app.route('/capture', methods=['POST'])
