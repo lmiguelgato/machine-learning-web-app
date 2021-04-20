@@ -17,8 +17,6 @@ from datauri.exceptions import (
 
 import numpy as np
 
-import tensorflow as tf
-
 import PIL.Image as Image
 
 from flask import (
@@ -40,7 +38,7 @@ from flask_cors import CORS
 
 from flask_socketio import SocketIO
 
-from api.core import models
+from api.core import models, rock_paper_scissor
 from api.config import celeryconfig, tfconfig
 from api.core.datasets import create_dataset
 from api.core.images import (
@@ -93,7 +91,7 @@ def train_task(room, url):
 
     celery_logger.info("Start training ...")
     try:
-        history = models.three_classes_classifier.fit(
+        history = rock_paper_scissor.model.fit(
             train_dataset,
             validation_data=validation_dataset,
             epochs=tfconfig.EPOCHS,
@@ -105,14 +103,14 @@ def train_task(room, url):
         celery_logger.info("Done ...")
         celery_logger.info("Saving the model ...")
         try:
-            models.three_classes_classifier.save(f'{MODEL_STORAGE}/rps_model.h5')
+            rock_paper_scissor.model.save(f'{MODEL_STORAGE}/rps_model.h5')
         except Exception as e:
             celery_logger.error(e)
         else:
             celery_logger.info("Done ...")
 
         # TODO use acc and loss to make a plot
-        acc = history.history['sparse_categorical_accuracy']
+        acc = history.history['accuracy']
         loss = history.history['loss']
 
         print(acc, loss)
@@ -174,11 +172,7 @@ def predict():
     image = Image.open(io.BytesIO(uri.data))
 
     # Get probabilities for each class
-    tensor_image = tf.keras.preprocessing.image.img_to_array(image)
-    tensor_image_resized = tf.image.resize(tensor_image, [160, 160])
-    class_probabilities = models.three_classes_classifier.predict(
-        tensor_image_resized[tf.newaxis, ...]
-        )
+    class_probabilities = rock_paper_scissor(image)
 
     return make_response(jsonify({
         'probability': str(round(np.max(class_probabilities), 2)),

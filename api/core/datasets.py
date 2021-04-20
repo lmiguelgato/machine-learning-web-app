@@ -14,7 +14,8 @@ def create_dataset(from_path):
         subset="training",
         seed=tfconfig.RANDOM_SEED,
         batch_size=tfconfig.BATCH_SIZE,
-        image_size=tfconfig.IMG_SIZE
+        image_size=tfconfig.IMG_SIZE,
+        label_mode='categorical'
         )
 
     validation_dataset = image_dataset_from_directory(
@@ -23,7 +24,8 @@ def create_dataset(from_path):
         subset="validation",
         seed=tfconfig.RANDOM_SEED,
         batch_size=tfconfig.BATCH_SIZE,
-        image_size=tfconfig.IMG_SIZE
+        image_size=tfconfig.IMG_SIZE,
+        label_mode='categorical'
         )
 
     train_dataset = train_dataset.cache().shuffle(10, tfconfig.RANDOM_SEED)

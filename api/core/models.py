@@ -2,6 +2,10 @@
 """
 from datetime import datetime
 
+from numpy import ndarray
+
+from PIL.JpegImagePlugin import JpegImageFile
+
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
@@ -17,40 +21,42 @@ from ..config import tfconfig
     https://arxiv.org/abs/1704.04861
 """
 
-# Each Keras Application expects a specific kind of input preprocessing:
-preprocess_input = tf.keras.applications.mobilenet.preprocess_input
 
+class RockPaperScissor():
+    def __init__(self, input_shape: tuple = (160, 160)) -> None:
+        self.input_shape = input_shape
 
-rescale = tf.keras.layers.experimental.preprocessing.Rescaling(1./127.5, offset=-1)
-data_augmentation = tf.keras.Sequential([
-  tf.keras.layers.experimental.preprocessing.RandomFlip('horizontal'),
-  tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
-])
+        preprocessing_layer = tf.keras.applications.mobilenet.preprocess_input
 
-mobile_net = tf.keras.applications.MobileNet(
-    input_shape=tfconfig.IMG_SIZE + (3,),
-    include_top=False,  # whether to include the fully-connected layer at the top of the network
-    alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
-    depth_multiplier=1  # a.k.a. resolution multiplier, it controls the depth of the network
-    )
-mobile_net.trainable = False
+        base_model = tf.keras.applications.MobileNet(
+            input_shape=self.input_shape + (3,),
+            include_top=False,  # whether to include the fully-connected layer at the top of the DNN
+            alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
+            depth_multiplier=1  # a.k.a. resolution multiplier, it controls the depth of the network
+            )
+        base_model.trainable = False
 
-# TODO: define a class instead
-inputs = tf.keras.Input(shape=tfconfig.IMG_SIZE + (3,))
-x = preprocess_input(inputs)
-x = mobile_net(x, training=False)
-x = GlobalAveragePooling2D()(x)
-x = Dense(100, activation='relu')(x)
-outputs = Dense(3, activation='softmax')(x)
+        # Define the architecture through the TF functional API
+        self.inputs = tf.keras.Input(shape=self.input_shape + (3,))
+        x = preprocessing_layer(self.inputs)
+        x = base_model(x, training=False)
+        x = GlobalAveragePooling2D()(x)
+        x = Dense(100, activation='relu')(x)
+        self.outputs = Dense(3, activation='softmax')(x)
 
-three_classes_classifier = tf.keras.Model(inputs, outputs)
+        self.model = tf.keras.Model(self.inputs, self.outputs)
 
-# Compile the model
-three_classes_classifier.compile(
-    optimizer=tf.keras.optimizers.Adam(lr=tfconfig.LEARNING_RATE),
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-    metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
-    )
+        self.model.compile(
+            optimizer=tf.keras.optimizers.Adam(lr=tfconfig.LEARNING_RATE),
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+            )
+
+    def __call__(self, image: JpegImageFile) -> ndarray:
+        # Get probabilities for each class
+        tensor_image = tf.keras.preprocessing.image.img_to_array(image)
+        tensor_image_resized = tf.image.resize(tensor_image, self.input_shape)
+        return self.model.predict(tensor_image_resized[tf.newaxis, ...])
 
 
 class CustomCallback(keras.callbacks.Callback):
@@ -95,9 +101,9 @@ class CustomCallback(keras.callbacks.Callback):
 
         msg = f"Epoch {epoch+1}/{tfconfig.EPOCHS} - "
         msg += f"Loss: {logs['loss']:.2}"
-        msg += f", Accuracy: {logs['sparse_categorical_accuracy']:.2}"
+        msg += f", Accuracy: {logs['accuracy']:.2}"
         msg += f" - Val. loss: {logs['val_loss']:.2}"
-        msg += f", Val. accuracy: {logs['val_sparse_categorical_accuracy']:.2}"
+        msg += f", Val. accuracy: {logs['val_accuracy']:.2}"
 
         meta = {
                 'current': epoch+1,
