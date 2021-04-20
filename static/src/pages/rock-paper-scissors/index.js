@@ -33,7 +33,9 @@ const RockPaperScissors = (props) => {
         screenshotFormat="image/jpeg"
         height="200px"
         endpoint={props.endpoint}
-        select={props.select}/>
+        select={props.select}
+        optionDescription={props.options}/>
+      <br />
       <br />
       <RadioButton
         optionDescription={props.options}

@@ -19,8 +19,7 @@ const WebSocket = (props) => {
     const apiResponse = await axios.post(
       TRAIN_ROUTE,
       {
-        user_id: userId,
-        dataset_up_to_date: false // TODO get this from actual state
+        user_id: userId
       }
     )
 

@@ -3,6 +3,9 @@ import Button from 'react-bootstrap/Button'
 import Webcam from 'react-webcam'
 import axios from 'axios'
 
+// Constants
+import { PREDICT_ROUTE, CONFUSED_EMOJIS } from '../../constant'
+
 const Camera = (props) => {
   const [capture, setCapture] = useState(false)
   const [isPredicting, setIsPredicting] = useState(false)
@@ -10,25 +13,31 @@ const Camera = (props) => {
 
   const webcamRef = React.useRef(null)
 
-  const togglePredict = () => {
+  const togglePredict = async () => {
     setIsPredicting(!isPredicting)
 
     if (isPredicting) {
       setPredictionStatus('')
     } else {
-      setPredictionStatus('Prediction ...')
-    }
-    /* while (isPredicting) {
-      setStatus(s => s + ' + Prediction ...')
-    } */
-    /*
-    const apiResponse = await axios.post(
-      TRAIN_ROUTE,
-      {
-        user_id: userId,
-        dataset_up_to_date: false // TODO get this from actual state
+      setPredictionStatus('I am ')
+      const imageSrc = webcamRef.current.getScreenshot()
+
+      const apiResponse = await axios.post(
+        PREDICT_ROUTE,
+        {
+          data_uri: imageSrc
+        }
+      )
+
+      const roundPercent = Math.round(apiResponse.data.probability * 100)
+      console.log(roundPercent)
+      if (roundPercent > 50) {
+        const inference = props.optionDescription[apiResponse.data.label]
+        setPredictionStatus(s => s + roundPercent + ' % confident it is a ' + inference)
+      } else {
+        setPredictionStatus(s => s + '... ' + CONFUSED_EMOJIS[Math.floor(Math.random() * CONFUSED_EMOJIS.length)] + ' ... not sure what that is.')
       }
-    ) */
+    }
   }
 
   const takePicture = React.useCallback(
