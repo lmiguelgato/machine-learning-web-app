@@ -21,9 +21,9 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-      pip install -r requirements.txt
-      pip install tensorflow==2.4.0-rc0
-      pip install flake8==3.9.1 pylint==2.7.4
+        pip install -r requirements.txt
+        pip install tensorflow==2.4.0-rc0
+        pip install flake8==3.9.1 pylint==2.7.4
     - name: Run checks
       run: |
         pylint api/ --disable=W0511,W0105,C0103
