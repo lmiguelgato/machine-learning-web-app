@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    name: Lint API
+    name: Lint and Test API
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
