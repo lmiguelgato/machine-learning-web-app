@@ -87,6 +87,7 @@ class CustomCallback(keras.callbacks.Callback):
         self.room = room
 
     def on_train_begin(self, logs=None):
+        """on_train_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
@@ -102,18 +103,21 @@ class CustomCallback(keras.callbacks.Callback):
         post(self.url, json=meta)
 
     def on_train_end(self, logs=None):
+        """on_train_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Stop training; got log keys: {keys}")
 
     def on_epoch_begin(self, epoch, logs=None):
+        """on_epoch_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Start epoch {epoch} of training; got log keys: {keys}")
 
     def on_epoch_end(self, epoch, logs=None):
+        """on_epoch_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
@@ -135,60 +139,70 @@ class CustomCallback(keras.callbacks.Callback):
         post(self.url, json=meta)
 
     def on_test_begin(self, logs=None):
+        """on_test_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Start testing; got log keys: {keys}")
 
     def on_test_end(self, logs=None):
+        """on_test_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Stop testing; got log keys: {keys}")
 
     def on_predict_begin(self, logs=None):
+        """on_predict_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Start predicting; got log keys: {keys}")
 
     def on_predict_end(self, logs=None):
+        """on_predict_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"Stop predicting; got log keys: {keys}")
 
     def on_train_batch_begin(self, batch, logs=None):
+        """on_train_batch_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"...Training: start of batch {batch}; got log keys: {keys}")
 
     def on_train_batch_end(self, batch, logs=None):
+        """on_train_batch_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"...Training: end of batch {batch}; got log keys: {keys}")
 
     def on_test_batch_begin(self, batch, logs=None):
+        """on_test_batch_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"...Evaluating: start of batch {batch}; got log keys: {keys}")
 
     def on_test_batch_end(self, batch, logs=None):
+        """on_test_batch_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"...Evaluating: end of batch {batch}; got log keys: {keys}")
 
     def on_predict_batch_begin(self, batch, logs=None):
+        """on_predict_batch_begin custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
             self.logger.info(f"...Predicting: start of batch {batch}; got log keys: {keys}")
 
     def on_predict_batch_end(self, batch, logs=None):
+        """on_predict_batch_end custom callback."""
         keys = list(logs.keys())
 
         if self.logger:
