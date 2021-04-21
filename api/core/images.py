@@ -4,10 +4,7 @@ from datetime import datetime
 
 import PIL.Image as Image
 
-from api.constant import (
-    RPS_OPTIONS,
-    LOCAL_STORAGE
-)
+from api.constant import RPS_OPTIONS, LOCAL_STORAGE
 
 
 def check_image_format(uri, screenshot_format, selected):
@@ -21,21 +18,25 @@ def check_image_format(uri, screenshot_format, selected):
     """
 
     # Check format and type of data received
-    tx_data_type, tx_data_format = screenshot_format.split('/')
-    rx_data_type, rx_data_format = uri.mimetype.split('/')
+    tx_data_type, tx_data_format = screenshot_format.split("/")
+    rx_data_type, rx_data_format = uri.mimetype.split("/")
 
     causes = []
     is_valid = True
 
     if tx_data_type != rx_data_type:
         is_valid = False
-        causes.append(f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}.")
+        causes.append(
+            f"File type mismatch. Expected {tx_data_type}, got {rx_data_type}."
+        )
 
     if tx_data_format != rx_data_format:
         is_valid = False
-        causes.append(f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}.")
+        causes.append(
+            f"File format mismatch. Expected {tx_data_format}, got {rx_data_format}."
+        )
 
-    if rx_data_type != 'image':
+    if rx_data_type != "image":
         is_valid = False
         causes.append(f"Unexpected '{uri.mimetype}' received.")
 
@@ -60,7 +61,9 @@ def save_capture(uri, selected, path=None):
         save_path = f"{path}/"
     else:
         save_path = f"{LOCAL_STORAGE}/{RPS_OPTIONS[selected]}/"
-    save_path += f"{RPS_OPTIONS[selected]}_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S:%f')}"
+    save_path += (
+        f"{RPS_OPTIONS[selected]}_{datetime.now().strftime('%Y-%m-%d_%H:%M:%S:%f')}"
+    )
     save_path += f".{uri.mimetype.split('/')[1]}"
 
     image = Image.open(io.BytesIO(uri.data))

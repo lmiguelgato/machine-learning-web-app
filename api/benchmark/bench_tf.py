@@ -14,13 +14,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.layers import (
-    Conv2D,
-    MaxPooling2D,
-    Dropout,
-    Flatten,
-    Dense
-    )
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 
 # Set the global random seed for repeatability:
 SEED = 42
@@ -36,8 +30,8 @@ AUTO = tf.data.experimental.AUTOTUNE
 
 # Load MNIST dataset as `tf.data.Dataset` objects, and split it in train/test sets:
 (ds_train, ds_test), ds_info = tfds.load(
-    'mnist',
-    split=['train', 'test'],
+    "mnist",
+    split=["train", "test"],
     as_supervised=True,
     with_info=True,
 )
@@ -46,38 +40,46 @@ AUTO = tf.data.experimental.AUTOTUNE
 # Preprocessing function to keep images in the same scale and help gradient descent convergence:
 def scale(image, label):
     """Normalizes and cast images: `uint8` -> `float32`."""
-    return tf.cast(image, tf.float32) / 255., label
+    return tf.cast(image, tf.float32) / 255.0, label
 
 
 # Pipeline for the train dataset: preprocess, cache, shuffle, batch, and prefetch:
 ds_train = ds_train.map(scale, num_parallel_calls=AUTO)  # autotune based on avail. CPU
-ds_train = ds_train.cache()  # the 1st time the dataset is iterated over, its content will be cached
-ds_train = ds_train.shuffle(ds_info.splits['train'].num_examples, SEED)  # shuffles the dataset
-ds_train = ds_train.batch(BATCH_SIZE)  # combine consecutive elements of this dataset into batches
+ds_train = (
+    ds_train.cache()
+)  # the 1st time the dataset is iterated over, its content will be cached
+ds_train = ds_train.shuffle(
+    ds_info.splits["train"].num_examples, SEED
+)  # shuffles the dataset
+ds_train = ds_train.batch(
+    BATCH_SIZE
+)  # combine consecutive elements of this dataset into batches
 ds_train = ds_train.prefetch(AUTO)  # autotune the buffer size when prefetching
 
 # Do the same for the test dataset, except for shuffling since we're using the whole test set anyway
-ds_test = ds_test.map(scale, num_parallel_calls=AUTO).cache().batch(BATCH_SIZE).prefetch(AUTO)
+ds_test = (
+    ds_test.map(scale, num_parallel_calls=AUTO).cache().batch(BATCH_SIZE).prefetch(AUTO)
+)
 
 # Define a CNN through the Sequential API from Keras:
 model = Sequential(
     [
-        Conv2D(32, kernel_size=(3, 3), activation='relu'),
-        Conv2D(64, kernel_size=(3, 3), activation='relu'),
+        Conv2D(32, kernel_size=(3, 3), activation="relu"),
+        Conv2D(64, kernel_size=(3, 3), activation="relu"),
         MaxPooling2D(pool_size=(2, 2)),
         Dropout(0.25),
         Flatten(),
-        Dense(128, activation='relu'),
+        Dense(128, activation="relu"),
         Dropout(0.5),
-        Dense(10, activation='softmax')
+        Dense(10, activation="softmax"),
     ]
-    )
+)
 
 # Configure the model for training:
 model.compile(
-    loss='sparse_categorical_crossentropy',
+    loss="sparse_categorical_crossentropy",
     optimizer=Adam(LEARNING_RATE),
-    metrics=['accuracy'],
+    metrics=["accuracy"],
 )
 
 # Train and evaluate the model for `NUM_EPOCHS` iterations on the dataset:
