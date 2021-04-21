@@ -23,13 +23,16 @@ jobs:
       run: |
         pip install -r requirements.txt
         pip install tensorflow==2.4.0-rc0
-        pip install flake8==3.9.1 pylint==2.7.4
+        pip install flake8==3.9.1 pylint==2.7.4 black==20.8b1
     - name: Run checks
       run: |
+        # Python code formatter:
+        black --check .
+        # Python static code analysis:
         pylint api/ --disable=W0511,W0105,C0103
-        # stop the build if there are Python syntax errors or undefined names
+        # Stop the build if there are Python syntax errors or undefined names:
         flake8 api/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide:
         flake8 api/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with Pytest
       run: |
