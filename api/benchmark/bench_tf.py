@@ -12,9 +12,9 @@
     and high-performance input pipelines through the Data API from TensorFlow."""
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from tensorflow.keras.layers import Conv2D, Dense, Dropout, Flatten, MaxPooling2D
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 
 # Set the global random seed for repeatability:
 SEED = 42

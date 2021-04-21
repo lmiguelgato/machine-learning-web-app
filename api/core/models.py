@@ -1,18 +1,14 @@
 """Machine learning models and routines."""
 from datetime import datetime
 
-from numpy import ndarray
-
-from PIL.JpegImagePlugin import JpegImageFile
-
 import tensorflow as tf
+from numpy import ndarray
+from PIL.JpegImagePlugin import JpegImageFile
+from requests import post
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 
-from requests import post
-
 from ..config import tfconfig
-
 
 """ --- MobileNet model ---
     Reference (https://arxiv.org/abs/1704.04861):

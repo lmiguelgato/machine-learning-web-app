@@ -2,35 +2,26 @@
 import io
 import uuid
 from datetime import datetime
-from requests import post
-
-from os import listdir, environ
-from os.path import isfile, join, abspath, dirname
-
-from dotenv import load_dotenv
-
-from datauri import DataURI
-from datauri.exceptions import InvalidDataURI, InvalidCharset, InvalidMimeType
+from os import environ, listdir
+from os.path import abspath, dirname, isfile, join
 
 import numpy as np
-
 import PIL.Image as Image
-
-from flask import Flask, make_response, request, session, url_for, jsonify, current_app
-from flask_socketio import emit, disconnect, join_room, leave_room
-from flask_cors import CORS
-
-from flask_socketio import SocketIO
-
-from api.core import models, rock_paper_scissor
-from api.config import celeryconfig, tfconfig
-from api.core.datasets import create_dataset
-from api.core.images import check_image_format, save_capture
-from api.constant import LOCAL_STORAGE, RPS_OPTIONS, IMG_FORMATS, MODEL_STORAGE
-
 from celery import Celery
 from celery.utils.log import get_task_logger
+from datauri import DataURI
+from datauri.exceptions import InvalidCharset, InvalidDataURI, InvalidMimeType
+from dotenv import load_dotenv
+from flask import Flask, current_app, jsonify, make_response, request, session, url_for
+from flask_cors import CORS
+from flask_socketio import SocketIO, disconnect, emit, join_room, leave_room
+from requests import post
 
+from api.config import celeryconfig, tfconfig
+from api.constant import IMG_FORMATS, LOCAL_STORAGE, MODEL_STORAGE, RPS_OPTIONS
+from api.core import models, rock_paper_scissor
+from api.core.datasets import create_dataset
+from api.core.images import check_image_format, save_capture
 
 basedir = abspath(dirname(dirname(__file__)))
 load_dotenv(join(basedir, ".env"))

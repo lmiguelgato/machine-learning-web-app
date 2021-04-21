@@ -4,7 +4,7 @@ from datetime import datetime
 
 import PIL.Image as Image
 
-from api.constant import RPS_OPTIONS, LOCAL_STORAGE
+from api.constant import LOCAL_STORAGE, RPS_OPTIONS
 
 
 def check_image_format(uri, screenshot_format, selected):
