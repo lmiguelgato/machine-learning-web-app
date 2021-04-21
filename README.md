@@ -1,10 +1,18 @@
-# :bulb: Machine Learning web app
+# Machine Learning web app
 
-A cool web app for machine learning, using React.js to build the UI and using Flask for the API.
+![API workflow](https://github.com/lmiguelgato/machine-learning-web-app/actions/workflows/api.yml/badge.svg)
+![UI workflow](https://github.com/lmiguelgato/machine-learning-web-app/actions/workflows/ui.yml/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8e8c21789f34400d88331a4c91742380)](https://www.codacy.com/gh/lmiguelgato/machine-learning-web-app/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lmiguelgato/machine-learning-web-app&amp;utm_campaign=Badge_Grade)
+
+A cool web app for machine learning, using [React.js](https://reactjs.org/) to build the UI and using [Flask](https://flask.palletsprojects.com/) for the API.
+
+## Description
 
 Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
-**Note:** The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
+Although completely redesigned, the way asynchronous tasks are handled in this project is inspired by some example code from [this project](https://github.com/jwhelland/flask-socketio-celery-example), which in turn is based on [this project](https://github.com/miguelgrinberg/flask-celery-example). In contrast with those, this project uses [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for low latency bi-directional communications between the clients and the server.
+
+The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
 
 - backend code and machine learning code live on the same codebase,
 - there is no model version control,
@@ -15,8 +23,6 @@ To address these issues, the recommended approach is to serve the model using we
 ## :computer: Development setup
 
 ### API
-
-Although completely redesigned, the way asynchronous tasks are handled in this project is inspired by some example code from [this project](https://github.com/jwhelland/flask-socketio-celery-example), which in turn is based on [this project](https://github.com/miguelgrinberg/flask-celery-example). In contrast with those, this project uses [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for low latency bi-directional communications between the clients and the server.
 
 To set up the API, you must:
 
