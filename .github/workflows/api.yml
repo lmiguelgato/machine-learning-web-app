@@ -9,11 +9,31 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  lint:
+    name: Lint API
     runs-on: ubuntu-latest
-
     steps:
-    - name: Actions/checkout
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: pip install flake8==3.9.1 pylint==2.7.4
+    - name: Run checks
+      run: |
+        pylint api/ --disable=W0511,W0105,C0103
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 api/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 api/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  test:
+    name: Test API
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
       uses: actions/checkout@v2
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
@@ -21,18 +41,8 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip        
         pip install -r requirements.txt
-        pip install flake8 pylint pytest tensorflow==2.4.0-rc0
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 api/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 api/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Analyzing the code with pylint
-      run: |
-        pylint api/ --disable=W0511,W0105,C0103
+        pip install tensorflow==2.4.0-rc0
     - name: Test with pytest
       run: |
         pytest api/
