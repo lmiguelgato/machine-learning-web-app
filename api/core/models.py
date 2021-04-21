@@ -32,6 +32,8 @@ class RockPaperScissor():
 
         preprocessing_layer = tf.keras.applications.mobilenet.preprocess_input
 
+        # MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
+        # https://arxiv.org/abs/1704.04861
         base_model = tf.keras.applications.MobileNet(
             input_shape=self.input_shape + (3,),
             include_top=False,  # whether to include the fully-connected layer at the top of the DNN
