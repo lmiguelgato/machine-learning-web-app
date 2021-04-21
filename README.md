@@ -10,7 +10,7 @@ The API implements a machine learning model server, which is a quick and easy im
 - there is no model version control,
 - inference requests are not handled in batches, but sequentially as they arrive.
 
-To address these issues, the recommended approach is to serve the model using well-established tools like TensorFlow Serving.
+To address these issues, the recommended approach is to serve the model using well-established tools like [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving).
 
 ## Development setup :computer:
 
