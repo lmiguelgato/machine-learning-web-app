@@ -10,10 +10,6 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 
 from ..config import tfconfig
 
-""" --- MobileNet model ---
-    Reference (https://arxiv.org/abs/1704.04861):
-    MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications"""
-
 
 class RockPaperScissor:
 

@@ -16,7 +16,6 @@ def check_image_format(uri, screenshot_format, selected):
     Returns:
         (bool, list of str): is data valid?, cause(s)
     """
-
     # Check format and type of data received
     tx_data_type, tx_data_format = screenshot_format.split("/")
     rx_data_type, rx_data_format = uri.mimetype.split("/")
@@ -56,7 +55,6 @@ def save_capture(uri, selected, path=None):
     Returns:
         bool, str: able to save image?, path to image
     """
-
     if path:
         save_path = f"{path}/"
     else:

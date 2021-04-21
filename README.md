@@ -15,9 +15,9 @@ Although completely redesigned, the way asynchronous tasks are handled in this p
 
 The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
 
-- backend code and machine learning code live on the same codebase,
-- there is no model version control,
-- inference requests are not handled in batches, but sequentially as they arrive.
+  - backend code and machine learning code live on the same codebase,
+  - there is no model version control,
+  - inference requests are not handled in batches, but sequentially as they arrive.
 
 To address these issues, the recommended approach is to serve the model using well-established tools like [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving), which can be deployed in a separate Docker container.
 
