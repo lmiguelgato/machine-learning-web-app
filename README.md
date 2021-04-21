@@ -32,7 +32,7 @@ Then, install [TensorFlow](https://www.tensorflow.org/) by running** `pip instal
 To make sure TensorFlow is properly installed, you may try the benchmark in `api/benchmark/`. For example, this should work fine: `python api/benchmark/bench_tf.py`, even for Apple Silicon chips.
 
 :two: -Start a local Redis server.\
-For example, if you are on Linux or Mac, execute `api/run-redis.sh` to install and/or launch a private copy.
+For example, in GNU-Linux and in MacOS, you may execute `api/run-redis.sh` to install and/or launch a private copy.
 
 :three: -Start a Celery worker using threaded tasks pooling (in another terminal instance) by running:\
 `celery -A main.celery worker --pool threads --loglevel info -E`
