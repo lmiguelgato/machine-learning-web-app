@@ -15,10 +15,8 @@ from ..config import tfconfig
 
 
 """ --- MobileNet model ---
-    Reference:
-    MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
-    https://arxiv.org/abs/1704.04861
-"""
+    Reference (https://arxiv.org/abs/1704.04861):
+    MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications"""
 
 
 class RockPaperScissor():

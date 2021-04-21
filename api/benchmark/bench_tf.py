@@ -1,5 +1,5 @@
 """Benchmark to check TensorFlow is properly installed.
-    
+
     Particularly useful for macs with Apple Silicon chips, where TensorFlow is not fully functional
     and stable yet.
 

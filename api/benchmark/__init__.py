@@ -1,1 +1,1 @@
-"""This package includes benchmarks to check proper functioning and performance."""
+"""Benchmarks to check proper functioning and performance."""
