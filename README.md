@@ -5,12 +5,12 @@ A cool web app for machine learning, using React.js to build the UI and using Fl
 
 Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
-The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where an endpoint handles training and another endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
+**Note:** The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
 - backend code and machine learning code live on the same codebase,
 - there is no model version control,
 - inference requests are not handled in batches, but sequentially as they arrive.
 
-To address these issues, the recommended approach is to serve the model using well-established tools like [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving).
+To address these issues, the recommended approach is to serve the model using well-established tools like [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving), which can be deployed in a separate Docker container.
 
 ## Development setup :computer:
 
