@@ -21,7 +21,7 @@ jobs:
         node-version: '15'
     - name: Install JS dependencies
       run: cd static/ && yarn install
-    - name: Test
-      run: cd static/ && yarn test
     - name: Build
       run: cd static/ && yarn build
+    - name: Test
+      run: cd static/ && yarn tests
