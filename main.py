@@ -148,7 +148,7 @@ def storage():
 
 @app.route('/train', methods=['POST'])
 def train():
-    """This task will respond with the current time, and will trigget a celery task."""
+    """Respond with the current time, and will trigget a celery task."""
     userid = request.json['user_id']
     room = f'uid-{userid}'
 
@@ -165,7 +165,7 @@ def train():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """This task will respond with the inferred label."""
+    """Respond with the inferred label."""
     data_uri = request.json['data_uri']
 
     if (data_uri):
@@ -185,7 +185,7 @@ def predict():
 
 @app.route('/capture', methods=['POST'])
 def capture():
-    """This route is triggered every time a picture was taken in the browser."""
+    """Triggered every time a picture was taken in the browser."""
     data_uri = request.json['data_uri']
     screenshot_format = request.json['screenshot_format']
     selected = request.json['selected']

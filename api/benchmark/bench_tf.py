@@ -1,7 +1,7 @@
-""" Benchmark to check TensorFlow is properly installed.
-
-    Particularly useful for macs with Apple
-    Silicon chips, where TensorFlow is not fully functional and stable yet.
+"""Benchmark to check TensorFlow is properly installed.
+    
+    Particularly useful for macs with Apple Silicon chips, where TensorFlow is not fully functional
+    and stable yet.
 
     This benchmark consists of training a deep neural network, including two convolutional layers
     and two fully-connected layers, with max-pooling and dropout in between. It is the classical
@@ -11,8 +11,7 @@
     from `tensorflow_datasets`: a collection of public research datasets that enable easy-to-use
     and high-performance input pipelines through the Data API from TensorFlow.
 
-    Benchmark popularized thanks to this issue: https://github.com/apple/tensorflow_macos/issues/25
-"""
+    Benchmark popularized thanks to this issue: https://github.com/apple/tensorflow_macos/issues/25"""
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow.keras.models import Sequential

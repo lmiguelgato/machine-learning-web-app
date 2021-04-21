@@ -1,1 +1,1 @@
-"""This package includes all configurations."""
+"""Configurations."""

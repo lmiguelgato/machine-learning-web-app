@@ -1,1 +1,1 @@
-"""This package includes all Pytest-compatible tests."""
+"""All Pytest-compatible tests."""

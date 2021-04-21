@@ -17,13 +17,16 @@ from ..config import tfconfig
 """ --- MobileNet model ---
     Reference:
     MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
-    https://arxiv.org/abs/1704.04861 """
+    https://arxiv.org/abs/1704.04861
+"""
 
 
 class RockPaperScissor():
+
     """Class to create a model to classify Rock/Paper/Scissor images."""
     def __init__(self, input_shape: tuple = (160, 160)) -> None:
         """Constructor for the RockPaperScissor class.
+
         Args:
             input_shape (tuple, optional): Image size. Defaults to (160, 160).
         """
@@ -67,9 +70,11 @@ class RockPaperScissor():
 
 
 class CustomCallback(keras.callbacks.Callback):
+
     """Define a simple custom callback that logs steps in training and prediction."""
     def __init__(self, url, room, logger=None):
         """Constructor for custom callback.
+
         Args:
             url (str): URL where callback messages will be posted.
             room (str): Room identifier for websocket.

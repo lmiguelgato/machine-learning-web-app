@@ -11,12 +11,11 @@ from api.constant import (
 
 
 def check_image_format(uri, screenshot_format, selected):
-    """Extract data from URI and check format and type of data received
+    """Extract data from URI and check format and type of data received.
     Args:
         data_uri (str): image in data URI format
         screenshot_format (str): data type and format
         selected: index of the options selected on the UI
-
     Returns:
         (bool, list of str): is data valid?, cause(s)
     """
