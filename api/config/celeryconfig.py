@@ -1,6 +1,4 @@
-"""Configuration file for a basic Celery set-up.
-"""
-
+"""Configuration file for a basic Celery set-up."""
 # Broker settings.
 broker_url = 'redis://localhost:6379/0'
 

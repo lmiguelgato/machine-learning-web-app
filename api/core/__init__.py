@@ -1,5 +1,4 @@
-"""Initialize API core module
-"""
+"""Initialize API core module."""
 from .models import RockPaperScissor
 
 

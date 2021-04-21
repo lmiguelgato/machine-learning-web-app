@@ -1,5 +1,4 @@
-"""Machine learning models and routines
-"""
+"""Machine learning models and routines."""
 from datetime import datetime
 
 from numpy import ndarray
@@ -18,14 +17,16 @@ from ..config import tfconfig
 """ --- MobileNet model ---
     Reference:
     MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
-    https://arxiv.org/abs/1704.04861
-"""
+    https://arxiv.org/abs/1704.04861 """
 
 
 class RockPaperScissor():
-    """Class to create a model to classify Rock/Paper/Scissor images.
-    """
+    """Class to create a model to classify Rock/Paper/Scissor images."""
     def __init__(self, input_shape: tuple = (160, 160)) -> None:
+        """Constructor for the RockPaperScissor class.
+        Args:
+            input_shape (tuple, optional): Image size. Defaults to (160, 160).
+        """
         self.input_shape = input_shape
 
         preprocessing_layer = tf.keras.applications.mobilenet.preprocess_input
@@ -61,15 +62,20 @@ class RockPaperScissor():
         return self.model.predict(tensor_image_resized[tf.newaxis, ...])
 
     def description(self) -> None:
-        """Print summary of the model.
-        """
+        """Print summary of the model."""
         self.model.summary()
 
 
 class CustomCallback(keras.callbacks.Callback):
-    """Define a simple custom callback that logs steps in training and prediction
-    """
+    """Define a simple custom callback that logs steps in training and prediction."""
     def __init__(self, url, room, logger=None):
+        """Constructor for custom callback.
+        Args:
+            url (str): URL where callback messages will be posted.
+            room (str): Room identifier for websocket.
+            logger (Logger, optional): Logger object from 'logging'package, or from a derived
+            class. Defaults to None.
+        """
         super().__init__()
         self.logger = logger
         self.url = url
@@ -79,7 +85,7 @@ class CustomCallback(keras.callbacks.Callback):
         keys = list(logs.keys())
 
         if self.logger:
-            self.logger.info("Starting training; got log keys: {}".format(keys))
+            self.logger.info(f"Starting training; got log keys: {keys}")
 
         meta = {
                 'current': 0,
@@ -90,21 +96,23 @@ class CustomCallback(keras.callbacks.Callback):
                 }
         post(self.url, json=meta)
 
-        print("Starting training; got log keys: {}".format(keys))
-
     def on_train_end(self, logs=None):
         keys = list(logs.keys())
-        print("Stop training; got log keys: {}".format(keys))
+
+        if self.logger:
+            self.logger.info(f"Stop training; got log keys: {keys}")
 
     def on_epoch_begin(self, epoch, logs=None):
         keys = list(logs.keys())
-        print("Start epoch {} of training; got log keys: {}".format(epoch, keys))
+
+        if self.logger:
+            self.logger.info(f"Start epoch {epoch} of training; got log keys: {keys}")
 
     def on_epoch_end(self, epoch, logs=None):
         keys = list(logs.keys())
 
         if self.logger:
-            self.logger.info("Start epoch {} of training; got log keys: {}".format(epoch, keys))
+            self.logger.info(f"End epoch {epoch} of training; got log keys: {keys}")
 
         msg = f"Epoch {epoch+1}/{tfconfig.EPOCHS} - "
         msg += f"Loss: {logs['loss']:.2}"
@@ -121,44 +129,62 @@ class CustomCallback(keras.callbacks.Callback):
                 }
         post(self.url, json=meta)
 
-        print("End epoch {} of training; got log keys: {}".format(epoch, keys))
-
     def on_test_begin(self, logs=None):
         keys = list(logs.keys())
-        print("Start testing; got log keys: {}".format(keys))
+
+        if self.logger:
+            self.logger.info(f"Start testing; got log keys: {keys}")
 
     def on_test_end(self, logs=None):
         keys = list(logs.keys())
-        print("Stop testing; got log keys: {}".format(keys))
+
+        if self.logger:
+            self.logger.info(f"Stop testing; got log keys: {keys}")
 
     def on_predict_begin(self, logs=None):
         keys = list(logs.keys())
-        print("Start predicting; got log keys: {}".format(keys))
+
+        if self.logger:
+            self.logger.info(f"Start predicting; got log keys: {keys}")
 
     def on_predict_end(self, logs=None):
         keys = list(logs.keys())
-        print("Stop predicting; got log keys: {}".format(keys))
+
+        if self.logger:
+            self.logger.info(f"Stop predicting; got log keys: {keys}")
 
     def on_train_batch_begin(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Training: start of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Training: start of batch {batch}; got log keys: {keys}")
 
     def on_train_batch_end(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Training: end of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Training: end of batch {batch}; got log keys: {keys}")
 
     def on_test_batch_begin(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Evaluating: start of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Evaluating: start of batch {batch}; got log keys: {keys}")
 
     def on_test_batch_end(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Evaluating: end of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Evaluating: end of batch {batch}; got log keys: {keys}")
 
     def on_predict_batch_begin(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Predicting: start of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Predicting: start of batch {batch}; got log keys: {keys}")
 
     def on_predict_batch_end(self, batch, logs=None):
         keys = list(logs.keys())
-        print("...Predicting: end of batch {}; got log keys: {}".format(batch, keys))
+
+        if self.logger:
+            self.logger.info(f"...Predicting: end of batch {batch}; got log keys: {keys}")

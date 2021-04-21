@@ -29,6 +29,7 @@ py==1.10.0
 pyparsing==2.4.7
 pytest==6.2.3
 python-datauri==1.0.0
+python-dotenv==0.17.0
 python-engineio==4.1.0
 python-socketio==5.2.1
 pytz==2021.1

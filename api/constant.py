@@ -1,5 +1,4 @@
-"""Initializer and constants definition
-"""
+"""Initializer and constants definition."""
 LOCAL_STORAGE = './data'
 
 MODEL_STORAGE = './models'

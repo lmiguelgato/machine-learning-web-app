@@ -1,4 +1,6 @@
-""" Benchmark to check TensorFlow is properly installed. Particularly useful for macs with Apple
+""" Benchmark to check TensorFlow is properly installed.
+
+    Particularly useful for macs with Apple
     Silicon chips, where TensorFlow is not fully functional and stable yet.
 
     This benchmark consists of training a deep neural network, including two convolutional layers
@@ -46,8 +48,7 @@ AUTO = tf.data.experimental.AUTOTUNE
 
 # Preprocessing function to keep images in the same scale and help gradient descent convergence:
 def scale(image, label):
-    """Normalizes and cast images: `uint8` -> `float32`
-    """
+    """Normalizes and cast images: `uint8` -> `float32`."""
     return tf.cast(image, tf.float32) / 255., label
 
 

@@ -1,5 +1,4 @@
-"""Operations over images.
-"""
+"""Operations over images."""
 import io
 from datetime import datetime
 
@@ -13,7 +12,6 @@ from api.constant import (
 
 def check_image_format(uri, screenshot_format, selected):
     """Extract data from URI and check format and type of data received
-
     Args:
         data_uri (str): image in data URI format
         screenshot_format (str): data type and format
@@ -50,8 +48,7 @@ def check_image_format(uri, screenshot_format, selected):
 
 
 def save_capture(uri, selected, path=None):
-    """Saves an image in data URI format, into the folder corresponding to the selected option
-
+    """Saves an image in data URI format, into the folder corresponding to the selected option.
     Args:
         uri (data URI): image in data URI format
         selected (str): option selected

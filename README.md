@@ -1,18 +1,21 @@
 
-# Machine Learning web app :bulb:
+# :bulb: Machine Learning web app
 
 A cool web app for machine learning, using React.js to build the UI and using Flask for the API.
 
 Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
 **Note:** The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
+
 - backend code and machine learning code live on the same codebase,
+
 - there is no model version control,
+
 - inference requests are not handled in batches, but sequentially as they arrive.
 
 To address these issues, the recommended approach is to serve the model using well-established tools like [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving), which can be deployed in a separate Docker container.
 
-## Development setup :computer:
+## :computer: Development setup
 
 ### API
 
@@ -42,7 +45,7 @@ For example, in GNU-Linux and in MacOS, you may execute `api/run-redis.sh` to in
 
 A development server for the API will be running on [http://localhost:5000](http://localhost:5000), and it will reload if you make edits. Since Flask is only used as API, you will see just a **Not Found** message if opened in a browser.
 
-#### Running API tests :microscope:
+#### :microscope: Running API tests
 
 This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `pytest` to run all tests.
 
@@ -59,12 +62,12 @@ Otherwise, manually open [http://localhost:3000](http://localhost:3000) to view 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-#### Running UI tests :microscope:
+#### :microscope: Running UI tests
 
 Launch the test runner in the interactive watch mode by running `yarn test`\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Deployment setup :rocket:
+## :rocket: Deployment setup
 
 ### Deploy the API
 

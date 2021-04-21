@@ -1,8 +1,6 @@
-"""Unit tests
-"""
+"""Unit tests."""
 
 
 def test_dummy_test():
-    """Dummy test
-    """
+    """Dummy test."""
     assert True

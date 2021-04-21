@@ -1,5 +1,4 @@
-"""Initialize API module
-"""
+"""Initialize API module."""
 import os
 
 from .constant import (

@@ -1,5 +1,4 @@
-"""Operations over datasets.
-"""
+"""Operations over datasets."""
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 

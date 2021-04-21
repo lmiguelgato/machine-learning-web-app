@@ -1,12 +1,13 @@
-"""Main module of the API
-"""
+"""Main module of the API."""
 import io
 import uuid
 from datetime import datetime
 from requests import post
 
-from os import listdir
-from os.path import isfile, join
+from os import listdir, environ
+from os.path import isfile, join, abspath, dirname
+
+from dotenv import load_dotenv
 
 from datauri import DataURI
 from datauri.exceptions import (
@@ -56,10 +57,15 @@ from celery import Celery
 from celery.utils.log import get_task_logger
 
 
+basedir = abspath(dirname(dirname(__file__)))
+load_dotenv(join(basedir, ".env"))
+
 app = Flask(__name__)
 app.clients = {}
 CORS(app)
-app.config['SECRET_KEY'] = 'top-secret!'
+app.config['SECRET_KEY'] = environ.get("FLASK_SECRET_KEY")
+
+DEBUG_MODE = environ.get("DEBUG").strip() == "true"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -72,7 +78,6 @@ celery.conf.update(app.config)
 @celery.task()
 def train_task(room, url):
     """Background task that runs a long function with progress reports."""
-
     celery_logger = get_task_logger(__name__)
 
     celery_logger.info("Creating dataset ...")
@@ -118,16 +123,13 @@ def train_task(room, url):
 
 @app.route('/clients', methods=['GET'])
 def clients():
-    """Clients route: list all clients keys
-    """
+    """Clients route: list all clients keys."""
     return make_response(jsonify({'clients': list(app.clients.keys())}))
 
 
 @app.route('/storage', methods=['POST'])
 def storage():
-    """Get information regarding the local storage
-    """
-
+    """Get information regarding the local storage."""
     # Find all images in local storage, and group them by label
     STORAGE_TRACKER = dict()
     for index, label in RPS_OPTIONS.items():
@@ -146,8 +148,7 @@ def storage():
 
 @app.route('/train', methods=['POST'])
 def train():
-    """This task will respond with the current time, and will trigget a celery task
-    """
+    """This task will respond with the current time, and will trigget a celery task."""
     userid = request.json['user_id']
     room = f'uid-{userid}'
 
@@ -164,8 +165,7 @@ def train():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """This task will respond with the infered label
-    """
+    """This task will respond with the inferred label."""
     data_uri = request.json['data_uri']
 
     if (data_uri):
@@ -185,8 +185,7 @@ def predict():
 
 @app.route('/capture', methods=['POST'])
 def capture():
-    """This route is triggered every time a picture was taken in the browser
-    """
+    """This route is triggered every time a picture was taken in the browser."""
     data_uri = request.json['data_uri']
     screenshot_format = request.json['screenshot_format']
     selected = request.json['selected']
@@ -218,8 +217,7 @@ def capture():
 
 @app.route('/status', methods=['POST'])
 def status():
-    """Route to check the status of a task through web sockets
-    """
+    """Route to check the status of a task through web sockets."""
     room = request.json['room']
     emit('status', request.json, room=room, namespace='/')
 
@@ -228,8 +226,7 @@ def status():
 
 @socketio.on('connect')
 def events_connect():
-    """Route to notify a new user has connected, and assign an ID
-    """
+    """Route to notify a new user has connected, and assign an ID."""
     userid = str(uuid.uuid4())
     session['userid'] = userid
     current_app.clients[userid] = request.namespace
@@ -241,16 +238,14 @@ def events_connect():
 
 @socketio.on('disconnect request')
 def disconnect_request():
-    """Route to notify that certain user has requested to disconnect
-    """
+    """Route to notify that certain user has requested to disconnect."""
     emit('status', {'status': 'Disconnected!'})
     disconnect()
 
 
 @socketio.on('disconnect')
 def events_disconnect():
-    """Route to notify that certain user has been disconnected
-    """
+    """Route to notify that certain user has been disconnected."""
     del current_app.clients[session['userid']]
     room = f"uid-{session['userid']}"
     leave_room(room)
@@ -258,4 +253,4 @@ def events_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=DEBUG_MODE)
