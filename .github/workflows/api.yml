@@ -37,7 +37,7 @@ jobs:
       run: |
         pytest api/
         pytest --cov=./
-    - name: Upload coverage to Codeco
+    - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v1
       with:
         fail_ci_if_error: true
