@@ -5,7 +5,7 @@ A cool web app for machine learning, using React.js to build the UI and using Fl
 
 Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
-The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where an endpoint handles training and another endpoint handles inference. However, this is not an efficient way of deploying machine learning models to production endpoints, for multiple reasons that make it inflexible and inefficient: \
+The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where an endpoint handles training and another endpoint handles inference. However, this is not an efficient way of deploying machine learning models to production endpoints, for multiple reasons that make it inflexible and inefficient:
 - backend code and machine learning code live on the same codebase,
 - there is no model version control,
 - inference requests are not handled in batches, but sequentially as they arrive.
