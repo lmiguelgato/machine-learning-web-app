@@ -9,9 +9,7 @@
 
     The model is defined through the Sequential API from Keras, and the MNIST dataset is loaded
     from `tensorflow_datasets`: a collection of public research datasets that enable easy-to-use
-    and high-performance input pipelines through the Data API from TensorFlow.
-
-    Benchmark popularized thanks to this issue: https://github.com/apple/tensorflow_macos/issues/25"""
+    and high-performance input pipelines through the Data API from TensorFlow."""
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow.keras.models import Sequential
