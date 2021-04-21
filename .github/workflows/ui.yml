@@ -10,8 +10,8 @@ on:
 
 jobs:
   build:
+    name: Build and Test UI
     runs-on: ubuntu-latest
-
     steps:
     - name: Actions/checkout
       uses: actions/checkout@v2
