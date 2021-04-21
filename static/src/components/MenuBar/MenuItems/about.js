@@ -8,8 +8,8 @@ const About = () => {
       <>
         <Alert show={show} variant="success">
           <p>
-              This is just a template web app using React JS to build the UI, and Flask as API. It uses Redis and celery to handle background tasks.
-              The original repo can be found <Alert.Link href="https://github.com/lmiguelgato/machine-learning-web-app">here</Alert.Link>.
+            A cool web app for machine learning, using  <a href="https://reactjs.org/">React.js</a> to build the UI and using <a href="https://flask.palletsprojects.com/">Flask</a> for the API.
+            The original repo can be found <Alert.Link href="https://github.com/lmiguelgato/machine-learning-web-app">here</Alert.Link>.
           </p>
           <hr />
           <div className="d-flex justify-content-end">

@@ -8,7 +8,6 @@ import RockPaperScissors from './pages/rock-paper-scissors'
 // Components
 import MenuBar from './components/MenuBar'
 import Websocket from './components/WebSocket/index'
-import AccordionInfo from './components/AccordionInfo/index'
 
 // Styles
 import './App.css'
@@ -34,7 +33,6 @@ function App () {
               endpoint={CAPTURE_ROUTE}
               options={{ 0: '✊', 1: '✋', 2: '✌️' }} />
             <Websocket endpoint={ENDPOINT}/>
-            <AccordionInfo />
           </Route>
         </Switch>
       </BrowserRouter>
