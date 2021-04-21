@@ -7,7 +7,7 @@ const Bar = (props) => {
       <>
         <Navbar dark color="primary">
           <div className="container">
-            <NavbarBrand href="/home">
+            <NavbarBrand href="/">
                 {props.title}
             </NavbarBrand>
 

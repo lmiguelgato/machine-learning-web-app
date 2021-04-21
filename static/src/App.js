@@ -3,12 +3,12 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 
 // Pages
 import Home from './pages/home'
-/* import WebCam from './pages/webcam' */
 import RockPaperScissors from './pages/rock-paper-scissors'
 
 // Components
 import MenuBar from './components/MenuBar'
 import Websocket from './components/WebSocket/index'
+import AccordionInfo from './components/AccordionInfo/index'
 
 // Styles
 import './App.css'
@@ -25,14 +25,7 @@ function App () {
 
       <BrowserRouter basename="">
         <Switch>
-          <Route path="/home">
-            <Home/>
-          </Route>
-
-          {/* <Route path="/webcam">
-            <WebCam endpoint={CAPTURE_ROUTE} />
-            <Websocket endpoint={ENDPOINT}/>
-          </Route> */}
+          <Route exact path="/" component={Home} />
 
           <Route path="/rock-paper-scissors">
             <RockPaperScissors
@@ -41,6 +34,7 @@ function App () {
               endpoint={CAPTURE_ROUTE}
               options={{ 0: '✊', 1: '✋', 2: '✌️' }} />
             <Websocket endpoint={ENDPOINT}/>
+            <AccordionInfo />
           </Route>
         </Switch>
       </BrowserRouter>

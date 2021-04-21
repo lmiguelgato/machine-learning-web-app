@@ -65,7 +65,7 @@ app.clients = {}
 CORS(app)
 app.config['SECRET_KEY'] = environ.get("FLASK_SECRET_KEY")
 
-DEBUG_MODE = environ.get("DEBUG").strip() == "true"
+DEBUG_MODE = environ.get("DEBUG") == "true"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -108,7 +108,7 @@ def train_task(room, url):
         celery_logger.info("Done ...")
         celery_logger.info("Saving the model ...")
         try:
-            rock_paper_scissor.model.save(f'{MODEL_STORAGE}/rps_model.h5')
+            rock_paper_scissor.model.save(f"{MODEL_STORAGE}/rps_model.h5")
         except Exception as e:
             celery_logger.error(e)
         else:
