@@ -4,6 +4,6 @@ import App from './App'
 
 test('renders web page title', () => {
   render(<App />)
-  const linkElement = screen.getByText(/Machine Learning web app 💡/i)
+  const linkElement = screen.getByText(/Machine Learning web app/i)
   expect(linkElement).toBeInTheDocument()
 })

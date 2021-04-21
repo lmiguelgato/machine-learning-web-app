@@ -3,7 +3,7 @@ import Bar from './menu-bar'
 
 const MenuBar = () => {
   return (
-    <Bar title='Machine Learning web app 💡'/>
+    <Bar title='Machine Learning web app'/>
   )
 }
 

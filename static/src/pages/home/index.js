@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert'
 const Home = () => {
   return (
     <Alert variant="success">
-      <Alert.Heading>Machine Learning web app 💡</Alert.Heading>
+      <Alert.Heading>About ...</Alert.Heading>
       <p>A cool web app for machine learning, using  <a href="https://reactjs.org/">React.js</a> to build the UI and using <a href="https://flask.palletsprojects.com/">React.js</a> for the API.
         <br />
         <br />
