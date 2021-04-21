@@ -168,16 +168,19 @@ def predict():
     """
     data_uri = request.json['data_uri']
 
-    uri = DataURI(data_uri)
-    image = Image.open(io.BytesIO(uri.data))
+    if (data_uri):
+        uri = DataURI(data_uri)
+        image = Image.open(io.BytesIO(uri.data))
 
-    # Get probabilities for each class
-    class_probabilities = rock_paper_scissor(image)
+        # Get probabilities for each class
+        class_probabilities = rock_paper_scissor(image)
 
-    return make_response(jsonify({
-        'probability': str(round(np.max(class_probabilities), 2)),
-        'label': str(class_probabilities.argmax())
-    }))
+        return make_response(jsonify({
+            'probability': str(round(np.max(class_probabilities), 2)),
+            'label': str(class_probabilities.argmax())
+        }))
+    else:
+        return make_response(jsonify({}))
 
 
 @app.route('/capture', methods=['POST'])

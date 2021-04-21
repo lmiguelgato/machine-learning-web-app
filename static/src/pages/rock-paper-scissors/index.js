@@ -25,7 +25,7 @@ const RockPaperScissors = (props) => {
 
   useEffect(() => {
     return getStorage()
-  })
+  }, [props.select])
 
   return (
     <>

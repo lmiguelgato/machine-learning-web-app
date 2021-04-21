@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Webcam from 'react-webcam'
 import axios from 'axios'
@@ -13,12 +13,8 @@ const Camera = (props) => {
 
   const webcamRef = React.useRef(null)
 
-  const togglePredict = async () => {
-    setIsPredicting(!isPredicting)
-
-    if (isPredicting) {
-      setPredictionStatus('')
-    } else {
+  useEffect(async () => {
+    if (isPredicting && webcamRef.current !== null) {
       setPredictionStatus('I am ')
       const imageSrc = webcamRef.current.getScreenshot()
 
@@ -30,14 +26,19 @@ const Camera = (props) => {
       )
 
       const roundPercent = Math.round(apiResponse.data.probability * 100)
-      console.log(roundPercent)
       if (roundPercent > 50) {
         const inference = props.optionDescription[apiResponse.data.label]
         setPredictionStatus(s => s + roundPercent + ' % confident it is a ' + inference)
       } else {
         setPredictionStatus(s => s + '... ' + CONFUSED_EMOJIS[Math.floor(Math.random() * CONFUSED_EMOJIS.length)] + ' ... not sure what that is.')
       }
+    } else {
+      setPredictionStatus('')
     }
+  }, [isPredicting])
+
+  const togglePredict = () => {
+    setIsPredicting(!isPredicting)
   }
 
   const takePicture = React.useCallback(
