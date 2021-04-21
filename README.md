@@ -9,9 +9,9 @@ A cool web app for machine learning, using [React.js](https://reactjs.org/) to b
 
 ## Description
 
-Most of the processing is distributed across threads by a task queue ([Celery](https://docs.celeryproject.org/)), to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
+Most of the processing is distributed across threads by a [Celery](https://docs.celeryproject.org/) task queue, to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
-Although completely redesigned, the way asynchronous tasks are handled in this project is inspired by some example code from [this project](https://github.com/jwhelland/flask-socketio-celery-example), which in turn is based on [this project](https://github.com/miguelgrinberg/flask-celery-example). In contrast with those, this project uses [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for low latency bi-directional communications between the clients and the server.
+Although completely redesigned, the way server and clients are synced regarding the status of a task is inspired by some example code from [this project](https://github.com/jwhelland/flask-socketio-celery-example), which in turn is based on [this project](https://github.com/miguelgrinberg/flask-celery-example). In contrast with those, this project uses [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for low latency bi-directional communications between the clients and the server.
 
 The API implements a machine learning model server, which is a quick and easy implementation for demonstration projects, where a Flask endpoint handles inference. However, this is not how I would recommend to deploy machine learning models to production endpoints. For multiple reasons, this simplified approach is inflexible and inefficient:
 
