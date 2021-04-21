@@ -9,6 +9,8 @@ A cool web app for machine learning, using [React.js](https://reactjs.org/) to b
 
 ## Description
 
+This is a full-stack project to showcase useful and/or curious Machine Learning projects, while providing a visually attractive and responsive user interface, as well as memorable user experience.
+
 Most of the processing is distributed across threads by a [Celery](https://docs.celeryproject.org/) task queue, to obtain a more responsive UI. The broker used to mediate between clients and workers is a [Redis](https://redis.io/) database.
 
 Server and clients are synced regarding the status of a task through low latency bi-directional communications using [Flask-SocketIO](https://flask-socketio.readthedocs.io/).
