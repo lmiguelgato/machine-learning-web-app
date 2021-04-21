@@ -24,4 +24,4 @@ jobs:
     - name: Build
       run: cd static/ && yarn build
     - name: Test
-      run: cd static/ && yarn tests
+      run: cd static/ && yarn test
