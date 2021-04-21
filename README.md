@@ -2,7 +2,8 @@
 
 ![API workflow](https://github.com/lmiguelgato/machine-learning-web-app/actions/workflows/api.yml/badge.svg)
 ![UI workflow](https://github.com/lmiguelgato/machine-learning-web-app/actions/workflows/ui.yml/badge.svg)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8e8c21789f34400d88331a4c91742380)](https://www.codacy.com/gh/lmiguelgato/machine-learning-web-app/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lmiguelgato/machine-learning-web-app&amp;utm_campaign=Badge_Grade)
+[![codacy](https://app.codacy.com/project/badge/Grade/8e8c21789f34400d88331a4c91742380)](https://www.codacy.com/gh/lmiguelgato/machine-learning-web-app/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lmiguelgato/machine-learning-web-app&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/lmiguelgato/machine-learning-web-app/branch/main/graph/badge.svg?token=LRCCWA5AN2)](https://codecov.io/gh/lmiguelgato/machine-learning-web-app)
 
 A cool web app for machine learning, using [React.js](https://reactjs.org/) to build the UI and using [Flask](https://flask.palletsprojects.com/) for the API.
 
