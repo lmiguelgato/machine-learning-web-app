@@ -76,7 +76,7 @@ def train_task(room, url):
             train_dataset,
             validation_data=validation_dataset,
             initial_epoch=history.epoch[-1],
-            epochs=tfconfig.EPOCHS+tfconfig.FINE_TUNE_EPOCHS,
+            epochs=tfconfig.EPOCHS + tfconfig.FINE_TUNE_EPOCHS,
             callbacks=[models.CustomCallback(url, room)],
         )
     except Exception as e:
@@ -92,8 +92,8 @@ def train_task(room, url):
             celery_logger.info("Done ...")
 
         # TODO use acc and loss to make a plot
-        acc = history.history["accuracy"] + fine_tune_history.history['accuracy']
-        loss = history.history["loss"] + fine_tune_history.history['loss']
+        acc = history.history["accuracy"] + fine_tune_history.history["accuracy"]
+        loss = history.history["loss"] + fine_tune_history.history["loss"]
 
         print(acc, loss)
 

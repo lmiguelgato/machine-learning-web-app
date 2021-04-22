@@ -30,7 +30,7 @@ class RockPaperScissor:
         self.base_model = tf.keras.applications.MobileNetV2(
             input_shape=self.input_shape + (3,),
             include_top=False,  # whether to include the fully-connected layer at the top of the DNN
-            weights='imagenet',
+            weights="imagenet",
         )
         self.base_model.trainable = False
 
@@ -62,7 +62,7 @@ class RockPaperScissor:
 
     def fine_tune_compile(self):
         self.model.compile(
-            optimizer=tf.keras.optimizers.RMSprop(lr=tfconfig.LEARNING_RATE/10),
+            optimizer=tf.keras.optimizers.RMSprop(lr=tfconfig.LEARNING_RATE / 10),
             loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
             metrics=["accuracy"],
         )
