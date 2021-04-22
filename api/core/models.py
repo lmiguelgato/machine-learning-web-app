@@ -31,8 +31,6 @@ class RockPaperScissor:
             input_shape=self.input_shape + (3,),
             include_top=False,  # whether to include the fully-connected layer at the top of the DNN
             weights='imagenet',
-            # alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
-            # depth_multiplier=1,  # a.k.a. resolution multiplier, it controls the depth of the network
         )
         self.base_model.trainable = False
 
@@ -41,7 +39,7 @@ class RockPaperScissor:
         x = preprocessing_layer(self.inputs)
         x = self.base_model(x, training=False)
         x = GlobalAveragePooling2D()(x)
-        x = Dense(1280, activation="relu")(x)
+        x = Dense(100, activation="relu")(x)
         self.outputs = Dense(3, activation="softmax")(x)
 
         self.model = tf.keras.Model(self.inputs, self.outputs)
@@ -96,8 +94,8 @@ class CustomCallback(keras.callbacks.Callback):
 
         meta = {
             "current": 0,
-            "total": tfconfig.EPOCHS,
-            "status": "Starting training ...",
+            "total": tfconfig.EPOCHS + tfconfig.FINE_TUNE_EPOCHS,
+            "status": "Training ...",
             "room": self.room,
             "time": datetime.now().strftime("%H:%M:%S"),
         }
@@ -124,7 +122,7 @@ class CustomCallback(keras.callbacks.Callback):
         if self.logger:
             self.logger.info(f"End epoch {epoch} of training; got log keys: {keys}")
 
-        msg = f"Epoch {epoch+1}/{tfconfig.EPOCHS} - "
+        msg = f"Epoch {epoch+1}/{tfconfig.EPOCHS+tfconfig.FINE_TUNE_EPOCHS} - "
         msg += f"Loss: {logs['loss']:.2}"
         msg += f", Accuracy: {logs['accuracy']:.2}"
         msg += f" - Val. loss: {logs['val_loss']:.2}"
@@ -132,7 +130,7 @@ class CustomCallback(keras.callbacks.Callback):
 
         meta = {
             "current": epoch + 1,
-            "total": tfconfig.EPOCHS,
+            "total": tfconfig.EPOCHS + tfconfig.FINE_TUNE_EPOCHS,
             "status": msg,
             "room": self.room,
             "time": datetime.now().strftime("%H:%M:%S"),
