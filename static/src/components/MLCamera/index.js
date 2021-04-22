@@ -8,6 +8,7 @@ const MLCamera = (props) => {
       height={props.height}
       endpoint={props.endpoint}
       select={props.select}
+      onCapture={props.onCapture}
       optionDescription={props.optionDescription}/>
   )
 }

@@ -8,6 +8,7 @@ import { STORAGE_ROUTE } from '../../constant'
 
 const RockPaperScissors = (props) => {
   const [numImages, setNumImages] = useState([0, 0, 0])
+  const [capture, setCapture] = useState(0)
 
   const getStorage = () => {
     return async () => {
@@ -25,7 +26,7 @@ const RockPaperScissors = (props) => {
 
   useEffect(() => {
     return getStorage()
-  }, [props.select])
+  }, [props.select, capture])
 
   return (
     <>
@@ -34,6 +35,7 @@ const RockPaperScissors = (props) => {
         height="200px"
         endpoint={props.endpoint}
         select={props.select}
+        onCapture={setCapture}
         optionDescription={props.options}/>
       <br />
       <br />

@@ -54,6 +54,8 @@ const Camera = (props) => {
               selected: props.select[0]
             }
           )
+
+          props.onCapture(n => n + 1)
         } else {
           toggleOnOff()
         }
