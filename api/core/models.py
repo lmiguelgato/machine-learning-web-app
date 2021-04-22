@@ -61,6 +61,7 @@ class RockPaperScissor:
         self.model.summary()
 
     def fine_tune_compile(self):
+        """Compile model during fine tuning."""
         self.model.compile(
             optimizer=tf.keras.optimizers.RMSprop(lr=tfconfig.LEARNING_RATE / 10),
             loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
