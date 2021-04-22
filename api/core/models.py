@@ -23,31 +23,32 @@ class RockPaperScissor:
         """
         self.input_shape = input_shape
 
-        preprocessing_layer = tf.keras.applications.mobilenet.preprocess_input
+        preprocessing_layer = tf.keras.applications.mobilenet_v2.preprocess_input
 
         # MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
         # https://arxiv.org/abs/1704.04861
-        base_model = tf.keras.applications.MobileNet(
+        self.base_model = tf.keras.applications.MobileNetV2(
             input_shape=self.input_shape + (3,),
             include_top=False,  # whether to include the fully-connected layer at the top of the DNN
-            alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
-            depth_multiplier=1,  # a.k.a. resolution multiplier, it controls the depth of the network
+            weights='imagenet',
+            # alpha=1.0,  # a.k.a. width multiplier, it controls the width of the network
+            # depth_multiplier=1,  # a.k.a. resolution multiplier, it controls the depth of the network
         )
-        base_model.trainable = False
+        self.base_model.trainable = False
 
         # Define the architecture through the TF functional API
         self.inputs = tf.keras.Input(shape=self.input_shape + (3,))
         x = preprocessing_layer(self.inputs)
-        x = base_model(x, training=False)
+        x = self.base_model(x, training=False)
         x = GlobalAveragePooling2D()(x)
-        x = Dense(100, activation="relu")(x)
+        x = Dense(1280, activation="relu")(x)
         self.outputs = Dense(3, activation="softmax")(x)
 
         self.model = tf.keras.Model(self.inputs, self.outputs)
 
         self.model.compile(
             optimizer=tf.keras.optimizers.Adam(lr=tfconfig.LEARNING_RATE),
-            loss="categorical_crossentropy",
+            loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
             metrics=["accuracy"],
         )
 
@@ -60,6 +61,13 @@ class RockPaperScissor:
     def description(self) -> None:
         """Print summary of the model."""
         self.model.summary()
+
+    def fine_tune_compile(self):
+        self.model.compile(
+            optimizer=tf.keras.optimizers.RMSprop(lr=tfconfig.LEARNING_RATE/10),
+            loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+            metrics=["accuracy"],
+        )
 
 
 class CustomCallback(keras.callbacks.Callback):

@@ -10,6 +10,7 @@ def create_dataset(from_path):
     train_dataset = image_dataset_from_directory(
         from_path,
         validation_split=0.2,
+        shuffle=True,
         subset="training",
         seed=tfconfig.RANDOM_SEED,
         batch_size=tfconfig.BATCH_SIZE,
@@ -20,6 +21,7 @@ def create_dataset(from_path):
     validation_dataset = image_dataset_from_directory(
         from_path,
         validation_split=0.2,
+        shuffle=True,
         subset="validation",
         seed=tfconfig.RANDOM_SEED,
         batch_size=tfconfig.BATCH_SIZE,
@@ -27,10 +29,7 @@ def create_dataset(from_path):
         label_mode="categorical",
     )
 
-    train_dataset = train_dataset.cache().shuffle(10, tfconfig.RANDOM_SEED)
     train_dataset = train_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
-    validation_dataset = validation_dataset.cache().prefetch(
-        buffer_size=tf.data.AUTOTUNE
-    )
+    validation_dataset = validation_dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
 
     return train_dataset, validation_dataset

@@ -6,4 +6,5 @@ IMG_SIZE = (
 )  # width and height of the image (should be no smaller than 32 each)
 LEARNING_RATE = 0.0001
 EPOCHS = 15
+FINE_TUNE_EPOCHS = 15
 RANDOM_SEED = 42
