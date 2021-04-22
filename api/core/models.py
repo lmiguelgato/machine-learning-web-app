@@ -92,15 +92,6 @@ class CustomCallback(keras.callbacks.Callback):
         if self.logger:
             self.logger.info(f"Starting training; got log keys: {keys}")
 
-        meta = {
-            "current": 0,
-            "total": tfconfig.EPOCHS + tfconfig.FINE_TUNE_EPOCHS,
-            "status": "Training ...",
-            "room": self.room,
-            "time": datetime.now().strftime("%H:%M:%S"),
-        }
-        post(self.url, json=meta)
-
     def on_train_end(self, logs=None):
         """on_train_end custom callback."""
         keys = list(logs.keys())
