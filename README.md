@@ -51,6 +51,11 @@ For example, in GNU-Linux and in MacOS, you may execute `api/run-redis.sh` to in
 
 A development server for the API will be running on [http://localhost:5000](http://localhost:5000), and it will reload if you make edits. Since Flask is only used as API, you will see just a **Not Found** message if opened in a browser.
 
+**Note:** Make sure to set the following environment variables in a `.env` file in the project root directory:
+
+- `FLASK_SECRET_KEY` is the session encryption key for the Flask app. A random key can be obtained by running: `python -c 'import os; print(os.urandom(16))'`
+- `DEBUG` can be either `true` or `false` depending on the mode the API will be running.
+
 #### :microscope: Running API tests
 
 This project uses [PyTest](https://docs.pytest.org/) for testing. Simply run `pytest` to run all tests.
