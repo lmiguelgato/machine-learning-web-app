@@ -14,7 +14,7 @@ Flask-Cors==3.0.10
 Flask-SocketIO==5.0.1
 gevent==21.1.2
 gevent-websocket==0.10.1
-greenlet==1.0.0
+greenlet==1.1.0
 idna==2.10
 iniconfig==1.1.1
 itsdangerous==1.1.0
